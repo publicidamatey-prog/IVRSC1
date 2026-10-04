@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B0E11">
+<title>IVRSC — Vista previa</title>
+<style>
+:root{
+  --bg:#0B0E11;--panel:#18181B;--panel2:#202024;--line:#2b2b31;--text:#EEEEEE;--muted:#A1A1AA;
+  --accent:#16A34A;--accent2:#15803D;--danger:#ff3b3b;--success:#22c55e;--shadow:0 18px 50px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% -10%,#102a18 0,#0B0E11 42%);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{border:0;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+.hidden{display:none!important}.profile-only{display:block}.profile-only.hidden{display:none!important}.muted{color:var(--muted)}
+header{position:sticky;top:0;z-index:50;height:62px;background:rgba(11,14,17,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.brand{font-size:23px;font-weight:900;letter-spacing:.5px;color:#fff}.brand span{color:var(--accent)}
+.header-actions{display:flex;align-items:center;gap:8px}.icon-btn,.ghost-btn{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:9px 11px;transition:.2s}.icon-btn:hover,.ghost-btn:hover{border-color:#1f8f49;transform:translateY(-1px)}
+main{width:min(760px,100%);margin:auto;padding:16px 14px 105px}.statusbar{font-size:12px;color:#bdbdc6;background:rgba(24,24,27,.8);border:1px solid var(--line);padding:9px 11px;border-radius:12px;margin-bottom:12px}
+.card{background:linear-gradient(180deg,rgba(24,24,27,.98),rgba(20,20,23,.98));border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:14px;box-shadow:0 8px 25px rgba(0,0,0,.12)}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.section-head h2,.section-head h3{margin:0}.section-head p{margin:4px 0 0;font-size:13px}
+
+.server-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.3);font-size:11px;font-weight:800}
+.link-card{display:block;margin-top:10px;padding:11px 12px;border:1px solid #30343a;border-radius:12px;background:#101216;color:#eee;text-decoration:none;transition:.2s}.link-card:hover{border-color:var(--accent);transform:translateY(-1px)}.link-card strong{display:block}.link-card span{display:block;color:var(--muted);font-size:12px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-links{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.profile-link{padding:7px 10px;border-radius:999px;background:#202024;border:1px solid #303037;color:#ddd;text-decoration:none;font-size:12px}.profile-link:hover{border-color:var(--accent);color:#fff}
+.sync-note{font-size:11px;color:#8f939c;margin-top:7px}.server-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 0 4px rgba(34,197,94,.1)}
+
+input,textarea,select{width:100%;background:#0f1013;color:var(--text);border:1px solid #33343b;border-radius:12px;padding:11px 12px;outline:none;transition:.2s;margin:6px 0}input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,163,74,.13)}textarea{resize:vertical}
+.primary{background:var(--accent);color:#fff;padding:10px 14px;border-radius:12px;font-weight:800;box-shadow:0 8px 18px rgba(22,163,74,.2);transition:.2s}.primary:hover{background:#22a85a;transform:translateY(-1px)}
+.secondary{background:#2a2a2f;color:#eee;padding:10px 14px;border-radius:12px;font-weight:700}.danger{background:#b4232b!important;color:#fff!important}.success{background:#166534!important;color:#fff!important}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions>*{min-width:0}
+.post-card{position:relative;background:#18181B;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:13px;transition:.2s}.post-card:hover{border-color:#245f3a;transform:translateY(-1px)}
+.post-head{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:#2a2a2f center/cover no-repeat;flex:none;border:2px solid #333}.avatar.live-now{border-color:#ff2020;box-shadow:0 0 0 2px rgba(255,32,32,.15);animation:pulse 1.5s infinite}.post-author{font-weight:800}.verified-dot{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);font-size:11px;color:#fff;margin-left:4px}.post-time{font-size:12px;color:var(--muted)}
+.post-caption{white-space:pre-wrap;line-height:1.5;margin:11px 0 0}.post-media{width:100%;max-height:680px;object-fit:cover;border-radius:14px;margin-top:11px;background:#090a0c}.post-actions{display:flex;gap:8px;margin-top:10px}.post-actions button{background:#202024;color:#d8d8dd;border:1px solid #2f3035;padding:8px 11px;border-radius:11px}.post-actions button.liked{color:#ff6b9c;border-color:#5f2438;background:#2a1720}
+.empty{padding:34px 14px;text-align:center;color:var(--muted);border:1px dashed #34353b;border-radius:14px}.empty strong{display:block;color:#eee;font-size:15px;margin-bottom:5px}.empty .emoji{font-size:30px;margin-bottom:8px}
+nav{position:fixed;bottom:max(9px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:60;width:min(98vw,760px);height:70px;background:rgba(24,24,27,.94);backdrop-filter:blur(16px);border:1px solid #34343a;border-radius:24px;display:grid;grid-template-columns:1fr 1fr .85fr 1fr 1fr 1fr;gap:4px;padding:7px;box-shadow:var(--shadow)}
+nav button{background:transparent;color:#a8a8b0;border-radius:17px;font-size:11px;font-weight:700;line-height:1.35;transition:.2s}nav button:hover{background:#242428;color:#fff}nav button.active{background:rgba(22,163,74,.16);color:#8ee6aa}nav .plus{background:var(--accent);color:#fff;border-radius:50%;font-size:26px;box-shadow:0 7px 20px rgba(22,163,74,.3)}
+.reels-feed{height:calc(100vh - 122px);overflow-y:auto;scroll-snap-type:y mandatory;border-radius:16px}.reel-card{position:relative;height:calc(100vh - 122px);min-height:520px;scroll-snap-align:center;background:#050506;border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:10px}.reel-card video{width:100%;height:100%;object-fit:cover}.reel-overlay{position:absolute;inset:auto 0 0;padding:22px 16px 16px;background:linear-gradient(transparent,rgba(0,0,0,.82))}.reel-author{font-weight:900}.reel-caption{max-width:78%;margin-top:5px;line-height:1.35}.reel-actions{position:absolute;right:12px;bottom:90px;display:flex;flex-direction:column;gap:9px}.reel-action{width:48px;height:48px;border-radius:50%;background:rgba(24,24,27,.78);color:#fff;border:1px solid #45454b;display:flex;align-items:center;justify-content:center;font-size:18px}.reel-action small{display:block;font-size:9px;color:#bbb;margin-top:2px}.reel-action.liked{background:#2a1720;color:#ff6b9c;border-color:#813454}.floating-heart{position:absolute;right:25px;bottom:120px;font-size:28px;pointer-events:none;animation:floatHeart .9s ease forwards}
+.category-row{display:flex;gap:7px;overflow:auto;padding-bottom:3px;margin-bottom:10px}.category-row button{white-space:nowrap;background:#202024;color:#bdbdc6;border:1px solid #303037;padding:8px 11px;border-radius:999px;font-size:12px}.category-row button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chooser-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}.chooser-btn{min-height:145px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#18241c,#151518);color:#eee;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:9px;transition:.2s}.chooser-btn:nth-child(2){background:linear-gradient(145deg,#18201f,#151518)}.chooser-btn:nth-child(3){background:linear-gradient(145deg,#1b2119,#151518)}.chooser-btn:nth-child(4){background:linear-gradient(145deg,#211a1a,#151518)}.chooser-btn b{font-size:17px}.chooser-btn b:first-letter{font-size:34px}.chooser-btn small{color:var(--muted);font-size:11px}.chooser-btn:hover{transform:translateY(-2px);border-color:var(--accent)}.save-btn{position:absolute!important;right:12px;bottom:12px;background:rgba(24,24,27,.9)!important;color:#fff!important;border:1px solid #444!important;border-radius:50%!important;width:42px;height:42px;padding:0!important}.save-btn.saved{color:#8ee6aa!important;border-color:var(--accent)!important;background:rgba(22,163,74,.18)!important}.post-card{position:relative}.profile-grid-item{position:relative}.media-type-badge{position:absolute;right:6px;top:6px;background:rgba(0,0,0,.75);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:4px 6px;font-size:11px;z-index:2}.community-topbar{display:flex;gap:8px;align-items:center;margin-bottom:10px}.community-topbar .community-search{margin:0;flex:1}.trends-card{margin:0 0 12px;padding:12px;border:1px solid #284a32;border-radius:14px;background:linear-gradient(135deg,rgba(22,163,74,.12),#151518)}.trend-item{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #292c2d}.trend-item:last-child{border-bottom:0}.draft-preview{margin-top:10px;border:1px dashed #3c6548;border-radius:12px;padding:10px;color:#8ee6aa;font-size:12px}.community-card{padding:14px;border:1px solid var(--line);border-radius:14px;margin-top:9px;background:#151518}.community-title{font-weight:850}.community-meta{font-size:12px;color:var(--muted);margin-top:4px}.community-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}.tag{display:inline-flex;align-items:center;gap:5px;background:#28282d;color:#c9c9d0;padding:5px 8px;border-radius:999px;font-size:11px}.tag.accent{background:rgba(22,163,74,.15);color:#8ee6aa}
+.profile-only{display:none}.profile-only:not(.hidden){display:block}.profile-cover{height:205px;border-radius:17px 17px 0 0;background:#202024 center/cover no-repeat;position:relative;overflow:hidden}.profile-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.48))}.profile-avatar-lg{position:absolute;z-index:2;left:20px;bottom:-46px;width:104px;height:104px;border-radius:50%;border:5px solid #18181B;background:#2a2a2f center/cover no-repeat}.profile-head{padding:59px 18px 18px}.profile-name-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.profile-name{font-size:24px;font-weight:900}.verified{display:inline-flex;align-items:center;gap:4px;background:rgba(22,163,74,.18);color:#8ee6aa;border:1px solid rgba(22,163,74,.45);padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800}.profile-bio{margin-top:7px;white-space:pre-wrap;line-height:1.45}.profile-stats{display:flex;gap:22px;margin:13px 0 0;color:var(--muted);font-size:13px}.profile-stats b{color:#fff}.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.profile-grid-item{aspect-ratio:1;border-radius:8px;overflow:hidden;background:#0f1013;border:1px solid #2b2c31}.profile-grid-item img,.profile-grid-item video{width:100%;height:100%;object-fit:cover}.profile-grid-item.text{padding:9px;font-size:11px;overflow:auto;color:#ccc}
+.live-banner{display:flex;justify-content:space-between;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(22,163,74,.16),rgba(255,62,62,.08));border:1px solid #255b39;border-radius:15px;padding:12px}.live-dot{width:9px;height:9px;border-radius:50%;background:#ff2d2d;display:inline-block;box-shadow:0 0 0 5px rgba(255,45,45,.12);animation:pulse 1.4s infinite}.live-room{background:#050506;border-radius:16px;overflow:hidden;border:1px solid var(--line)}.live-screen{height:360px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,#143c24,#070709 60%);position:relative}.live-screen .live-placeholder{text-align:center;color:#c8c8cf}.live-screen .live-placeholder .big{font-size:55px}.live-chat{height:220px;overflow:auto;padding:10px;background:#111216;border-top:1px solid var(--line)}.chat-message{padding:6px 7px;border-radius:7px;margin-bottom:4px;font-size:13px;line-height:1.4}.chat-message.highlighted{background:rgba(22,163,74,.13);border-left:3px solid var(--accent);padding-left:8px;animation:messageHighlight .35s ease}.chat-author{color:#65d98a;font-weight:800;margin-right:5px}.points-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;background:#202024;border-top:1px solid var(--line)}.points{color:#f5c451;font-weight:900}.store{border:1px solid var(--line);background:#151518;padding:11px;border-radius:13px;margin-top:8px}.reward{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #2a2a2e}.reward:last-child{border-bottom:0}.reward small{display:block;color:var(--muted);margin-top:2px}.reward button{background:#2b2140;color:#d6bcff;border:1px solid #553582;padding:8px 10px;border-radius:10px;font-weight:800}
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:15px}.modal{width:min(96vw,650px);max-height:92vh;overflow:auto;background:#17171a;border:1px solid #3a3a42;border-radius:22px;padding:18px;box-shadow:var(--shadow)}.modal h2{margin-top:0}.close-row{display:flex;justify-content:space-between;align-items:center}.close{background:#27272b;color:#ddd;width:36px;height:36px;border-radius:50%}
+.toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);opacity:0;z-index:200;background:#f5f5f5;color:#111;padding:10px 14px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.75}}@keyframes floatHeart{0%{opacity:0;transform:translateY(0) scale(.7)}30%{opacity:1}100%{opacity:0;transform:translateY(-100px) scale(1.4)}}@keyframes messageHighlight{from{transform:translateX(-4px);opacity:.5}to{transform:none;opacity:1}}
+.discord-channel-title-wrap{display:flex;align-items:center;gap:7px;min-width:0}.discord-back-btn{display:none;border:0;background:transparent;color:#4f5a53;border-radius:8px;width:32px;height:32px;font-size:22px;line-height:1;cursor:pointer}.discord-back-btn:hover{background:#edf2ee}.discord-online-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#35c759;margin-right:4px;vertical-align:middle}.crosspost-check input[type=checkbox]{appearance:none;-webkit-appearance:none;display:inline-grid;place-content:center;width:20px!important;height:20px!important;min-width:20px!important;border:2px solid #35c759!important;border-radius:5px!important;background:#fff!important;cursor:pointer}.crosspost-check input[type=checkbox]::before{content:'✓';transform:scale(0);width:10px;height:10px;color:#fff;font-weight:900;font-size:10px;line-height:10px}.crosspost-check input[type=checkbox]:checked{background:#35c759!important}.crosspost-check input[type=checkbox]:checked::before{transform:scale(1)}@media(max-width:560px){.discord-back-btn{display:inline-grid;place-items:center;flex:none}.discord-main-head{height:50px}.discord-channel-title-wrap{min-width:0}.discord-channel-title-wrap>div{min-width:0}.discord-channel-title-wrap b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.discord-main-tools button{padding:6px}}@media(max-width:560px){main{padding-left:9px;padding-right:9px}.card{border-radius:15px}.reel-card,.reels-feed{height:calc(100vh - 122px)}.live-screen{height:260px}.profile-cover{height:170px}.profile-avatar-lg{width:92px;height:92px}.profile-head{padding-top:55px}.nav{} }
+
+/* Mejoras Comunidad / Live / navegación / perfil / notificaciones */
+.community-search{margin:8px 0 12px}.tag-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.custom-tag{background:rgba(22,163,74,.12);color:#8ee6aa;border:1px solid rgba(22,163,74,.35);padding:5px 8px;border-radius:999px;font-size:11px}.live-question{padding:12px;background:#111216;border:1px solid #30333a;border-radius:13px;margin-bottom:10px}.poll-options{display:grid;gap:7px;margin-top:9px}.poll-option{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#202024;color:#eee;border:1px solid #34343a;border-radius:10px;padding:9px}.moderator-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.moderator{background:rgba(22,163,74,.13);border:1px solid rgba(22,163,74,.35);color:#9aefb1;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.chooser-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.chooser-btn{padding:18px 12px;border:1px solid #33343b;background:#202024;color:#eee;border-radius:15px;text-align:left;transition:.2s}.chooser-btn:hover{border-color:var(--accent);transform:translateY(-1px)}.chooser-btn b{display:block;font-size:15px;margin-bottom:4px}.chooser-btn small{color:var(--muted)}.notification-tabs{display:flex;gap:7px;margin:10px 0}.notification-tab{flex:1;background:#202024;color:#bbb;border:1px solid #33343b;padding:9px;border-radius:10px;font-weight:800}.notification-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}.pronouns{font-size:12px;color:var(--muted);margin-top:4px}
+</style>
+
+<style>
+.reel-audio{position:absolute;left:16px;right:88px;bottom:16px;z-index:3;font-size:12px;color:#eee;background:rgba(0,0,0,.42);padding:7px 10px;border-radius:999px;backdrop-filter:blur(8px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.reel-creator{display:flex;align-items:center;gap:8px}.reel-creator-photo{width:34px;height:34px;border-radius:50%;background:#292a2e center/cover no-repeat;border:2px solid #fff}.reel-action{flex-direction:column!important;gap:2px!important}.reel-action .action-icon{font-size:20px;line-height:1}.reel-action small{font-size:9px}.reel-actions{z-index:4}.community-open{margin-top:11px;width:100%}.community-detail{max-height:72vh;overflow:auto}.thread{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:13px 0;border-bottom:1px solid #292c2d}.vote-box{display:flex;flex-direction:column;align-items:center;gap:2px;background:#101216;border:1px solid #30343a;border-radius:12px;padding:5px}.vote-box button{background:transparent;color:#bbb;font-size:18px}.vote-box .score{font-weight:900;color:#eee}.thread-title{font-weight:850;font-size:15px}.thread-body{margin-top:6px;color:#d1d1d6;line-height:1.4}.thread-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.thread-footer{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.comment-btn{background:#202024;color:#ddd;border:1px solid #33343b;border-radius:10px;padding:7px 10px}.comments-modal{max-height:78vh;overflow:auto}.comment{border-bottom:1px solid #292c2d;padding:11px 0}.comment-main{display:flex;gap:9px}.comment-avatar{width:32px;height:32px;border-radius:50%;background:#2a2a2f;flex:none}.comment-text{line-height:1.4}.mention{color:#8ee6aa;font-weight:800}.reply-list{margin-left:41px;margin-top:5px;border-left:2px solid #2d5037;padding-left:10px}.reply-list.collapsed{display:none}.comment-actions{display:flex;gap:8px;margin-top:6px}.comment-actions button{background:transparent;color:#9fa1a8;font-size:11px}.comment-compose{display:flex;gap:7px;position:sticky;bottom:0;background:#18181b;padding-top:10px}.comment-compose input{margin:0}.comment-compose button{flex:none}.community-empty-note{margin-top:8px}
+</style>
+
+<style id="reels-comments-polish">
+.reel-sound-btn{position:absolute;top:14px;right:14px;z-index:8;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.62);color:#fff;border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(10px);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.reel-sound-btn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.reel-sound-btn:active{transform:scale(.94)}
+.reel-sound-btn.unmuted{background:rgba(53,199,89,.88);border-color:rgba(255,255,255,.55)}
+.comments-sheet-overlay{align-items:flex-end!important;padding:0!important}
+.comments-sheet{width:min(100%,680px)!important;max-height:min(78vh,720px)!important;height:min(78vh,720px);padding:0!important;border-radius:22px 22px 0 0!important;overflow:hidden!important;background:#fff!important;color:#111!important;border:1px solid #e4e7e4!important;box-shadow:0 -14px 45px rgba(0,0,0,.28)!important;display:flex;flex-direction:column}
+.comments-sheet .close-row{padding:13px 16px 11px;border-bottom:1px solid #e9ece9;flex:none}
+.comments-sheet .close-row h2{font-size:17px;margin:0;font-weight:850}
+.comments-sheet .close{width:34px;height:34px;background:#f1f3f1;color:#222}
+.comments-sheet .comments-handle{width:42px;height:4px;border-radius:999px;background:#cfd4cf;margin:9px auto 0}
+.comments-sheet #commentsList{flex:1;min-height:0;overflow-y:auto;padding:4px 16px 18px;overscroll-behavior:contain}
+.comments-sheet #commentsList .empty{margin:22px 0;border-color:#dfe4df;color:#777;background:#fafbfa}
+.comments-sheet .comment{padding:13px 0;border-bottom:1px solid #ecefec}
+.comments-sheet .comment-main{gap:10px}
+.comments-sheet .comment-avatar{width:36px;height:36px;border:1px solid #dfe4df;background:#eef3ee;display:flex;align-items:center;justify-content:center;color:#218b40;font-weight:850}
+.comments-sheet .comment-avatar::before{content:'@'}
+.comments-sheet .comment-main>b,.comments-sheet .comment-main b{color:#111}
+.comments-sheet .comment-text{color:#262a27;margin-top:3px;line-height:1.45}
+.comments-sheet .comment-actions button{color:#6c746e}
+.comments-sheet .comment-compose{flex:none;position:relative;bottom:auto;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #e5e9e5;box-shadow:0 -5px 18px rgba(0,0,0,.06);align-items:center}
+.comments-sheet .comment-compose input{background:#f3f5f3!important;color:#171917!important;border:1px solid #dfe4df!important;border-radius:999px!important;padding:11px 14px!important;margin:0!important}
+.comments-sheet .comment-compose input:focus{border-color:var(--green)!important;box-shadow:0 0 0 3px rgba(53,199,89,.13)!important}
+.comments-sheet .comment-compose button{width:44px;height:44px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0;box-shadow:none}
+.comments-sheet .comment-compose button::before{content:'➤';font-size:17px;line-height:1}
+.comments-sheet .reply-list{border-left-color:#cfe3d2}
+@media(max-width:560px){.comments-sheet{width:100%!important;max-height:82vh!important;height:82vh}.comments-sheet #commentsList{padding-left:13px;padding-right:13px}}
+</style>
+
+<style id="account-isolation-css">
+#accountModeNote{padding:9px 11px;border:1px solid #2b2f35;border-radius:10px;background:#111419}
+</style>
+
+<style id="ivrsc-clean-redesign">
+:root{--green:#35c759;--green-dark:#20a843;--bg:#f7f8f7;--card:#fff;--text:#111;--muted:#707570;--line:#e8ebe8;--radius:16px}
+body{background:var(--bg)!important;color:var(--text)!important}
+.app{max-width:720px!important;margin:auto!important}
+header{background:rgba(255,255,255,.94)!important;border-bottom:1px solid var(--line)!important;box-shadow:0 2px 14px rgba(0,0,0,.05)!important}
+.card,.post-card,.community-card,.profile-card,.reel-card,.modal,.panel{border:1px solid var(--line)!important;border-radius:var(--radius)!important;box-shadow:0 4px 18px rgba(0,0,0,.05)!important}
+button{border:0!important;border-radius:12px!important;min-height:40px!important;font-weight:750!important;transition:transform .15s ease,opacity .15s ease,background .15s ease!important}
+button:active{transform:scale(.96)!important}
+button.primary,.primary,.btn-primary{background:var(--green)!important;color:#fff!important;box-shadow:0 4px 12px rgba(53,199,89,.2)!important}
+button.secondary,.secondary{background:#eef8f0!important;color:#168a36!important;border:1px solid #cdebd4!important}
+input,textarea,select{border:1px solid var(--line)!important;border-radius:12px!important;background:#fff!important;min-height:42px!important;box-sizing:border-box}
+nav{background:rgba(255,255,255,.96)!important;border-top:1px solid var(--line)!important;box-shadow:0 -4px 18px rgba(0,0,0,.06)!important}
+nav button{background:transparent!important;color:#777!important;border-radius:12px!important}
+nav button.active{color:var(--green-dark)!important;background:#effaf1!important}
+nav button.plus{background:var(--green)!important;color:#fff!important;border-radius:50%!important;box-shadow:0 5px 15px rgba(53,199,89,.3)!important}
+.action-btn,.post-actions button,.comment-btn{background:#f3f5f3!important;color:#333!important;border:1px solid var(--line)!important}
+.post-actions button.liked,.save-btn.saved{color:var(--green-dark)!important;background:#eaf8ed!important}
+.verified-dot{background:var(--green)!important;color:#fff!important;border-radius:50%!important}
+.tag{background:#edf9ef!important;color:#168a36!important;border:1px solid #d1ecd6!important}
+.section-head{align-items:center}
+.empty{background:#fff!important;border:1px dashed #dfe5df!important;border-radius:var(--radius)!important;padding:28px 18px!important;text-align:center!important}
+.community-card{background:#fff!important}
+.profile-avatar,.avatar{border:2px solid #dff2e3!important}
+</style>
+<style id="ivrsc-polish-v2">
+/* Pulido visual: jerarquía, simetría y controles estilo red social */
+:root{--green:#35c759;--green2:#22ad45;--soft:#effaf2;--line:#e5e9e6;--text:#111315;--muted:#737a75}
+*{box-sizing:border-box}
+body{margin:0;background:#f5f7f5!important;color:var(--text)!important}
+main{padding:14px 12px 100px!important}
+.card,.post-card,.community-card{border-radius:18px!important;border:1px solid var(--line)!important;box-shadow:0 5px 22px rgba(16,24,16,.055)!important}
+section>.card{margin-bottom:12px!important}
+button{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;min-height:42px!important;padding:9px 14px!important;border-radius:12px!important;font-size:14px!important;font-weight:800!important;line-height:1!important;cursor:pointer!important}
+button.primary,.primary{background:var(--green)!important;color:#fff!important;border:1px solid var(--green)!important}
+button.primary:hover,.primary:hover{background:var(--green2)!important}
+button.secondary,.secondary,.post-actions button,.action-btn,.comment-btn{background:#f1f5f2!important;color:#236a35!important;border:1px solid #dfe8e1!important}
+button.danger{background:#fff1f1!important;color:#b42318!important;border:1px solid #f1d0d0!important}
+nav{display:grid!important;grid-template-columns:1fr 1fr 64px 1fr 1fr 1fr!important;align-items:center!important;gap:4px!important;padding:8px max(10px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom))!important}
+nav button{min-width:0!important;min-height:48px!important;padding:6px 2px!important;background:transparent!important;color:#7b817d!important;border:0!important;font-size:11px!important;flex-direction:column!important;gap:3px!important;border-radius:14px!important}
+nav button.active{background:var(--soft)!important;color:#15933a!important}
+nav button.plus{width:54px!important;height:54px!important;min-height:54px!important;margin:auto!important;padding:0!important;border-radius:50%!important;background:var(--green)!important;color:#fff!important;font-size:30px!important;box-shadow:0 7px 18px rgba(53,199,89,.28)!important}
+.profile-head{padding:18px!important}
+.profile-name-row{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;text-align:center!important}
+.profile-bio{text-align:center!important;max-width:620px!important;margin:8px auto!important;line-height:1.45!important}
+.profile-stats{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;max-width:360px!important;margin:14px auto!important;text-align:center!important}
+.profile-stats span{padding:10px;border:1px solid var(--line);border-radius:12px;background:#fafcfa}
+.profile-stats b{display:block;font-size:17px;color:#111}
+#accountModeNote{text-align:center!important}
+#profileLinksDisplay{display:flex!important;justify-content:center!important}
+.profile-links{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:7px!important;margin:10px 0 2px!important}
+.profile-link{display:inline-flex!important;align-items:center!important;padding:8px 11px!important;border-radius:999px!important;background:var(--soft)!important;color:#168d38!important;border:1px solid #d4ead9!important;text-decoration:none!important;font-weight:750!important;font-size:12px!important}
+#profile .card[style*="background:#111216"]{background:#fff!important;border:1px solid var(--line)!important}
+#profile .card details summary{list-style:none!important;display:flex!important;align-items:center!important;justify-content:center!important;min-height:44px!important;border-radius:12px!important;background:var(--green)!important;color:#fff!important;padding:11px!important}
+#profile .card details summary::-webkit-details-marker{display:none}
+#profile .card details>*:not(summary){display:block!important;width:100%!important;margin-top:9px!important}
+#profile .card details input,#profile .card details textarea{padding:11px 12px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:#fff!important}
+#profile .card details label{font-size:12px!important;font-weight:750!important;margin-bottom:-4px!important}
+.profile-avatar-lg{width:94px!important;height:94px!important;margin:-47px auto 0!important;border:4px solid #fff!important;box-shadow:0 4px 16px rgba(0,0,0,.12)!important}
+.profile-cover{height:170px!important;background:#e9eee9!important}
+.profile-grid{gap:3px!important}
+.profile-grid-item{aspect-ratio:1!important;border-radius:8px!important;overflow:hidden!important}
+.actions{display:flex!important;flex-wrap:wrap!important;gap:8px!important;align-items:center!important}
+input,textarea,select{width:100%!important;padding:10px 12px!important;border-radius:12px!important;border:1px solid var(--line)!important}
+.section-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important}
+.empty{border-radius:16px!important}
+@media(max-width:430px){main{padding-left:9px!important;padding-right:9px!important}nav{grid-template-columns:1fr 1fr 58px 1fr 1fr 1fr!important}nav button{font-size:10px!important}.profile-cover{height:145px!important}}
+</style>
+<style id="roles-cross-economy-css">
+.reputation-badge{display:inline-flex;gap:6px;align-items:center;margin-top:10px;padding:7px 10px;border-radius:999px;background:#edf9ef;color:#168a36;font-size:12px;border:1px solid #d1ecd6}.community-role-manager{margin:10px 0;padding:12px;border:1px solid #dce8df;border-radius:14px;background:#f7fbf8}.role-manager-head{display:flex;justify-content:space-between}.role-form{display:grid;grid-template-columns:1fr 1fr 80px auto;gap:7px;margin-top:9px}.role-list{display:grid;gap:7px;margin-top:10px}.role-list>div{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.role-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;background:#eaf8ed;color:#168a36;border:1px solid #cfe8d4;font-weight:800;font-size:11px}.hybrid-card{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 10px;padding:12px;border:1px solid #e1e7e2;border-radius:14px;background:#fff;box-shadow:0 3px 12px rgba(0,0,0,.04)}.hybrid-card div{display:grid;gap:3px}.hybrid-card small{color:#777}.live-hybrid{border-color:#f0d7d7}.economy-note{font-size:11px;color:#777;padding:6px 10px}.crosspost-check{display:flex;gap:8px;align-items:center;font-size:12px;color:#666}.crosspost-check input{width:auto!important;min-height:0!important}.tutorial-tag{display:inline-flex;margin:6px 0}.thread-body .role-badge{margin-left:5px}
+@media(max-width:600px){.role-form{grid-template-columns:1fr 1fr}.role-form button{grid-column:1/-1}.hybrid-card{align-items:flex-start;flex-direction:column}.hybrid-card button{width:100%}}
+</style>
+<style id="discord-community-redesign">
+.discord-community-shell{width:min(98vw,1120px)!important;height:min(88vh,820px)!important;padding:0!important;overflow:hidden!important;background:#f7f8f8!important;border:1px solid #dfe5e1!important;display:flex!important;flex-direction:column!important}
+.discord-community-header{min-height:72px;padding:12px 14px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid #dfe5e1}.discord-server-icon{width:42px;height:42px;border-radius:14px;background:#168a36;color:#fff;display:grid;place-items:center;font-weight:900;font-size:18px;flex:none}.discord-community-heading{min-width:0;flex:1}.discord-community-heading h2{margin:1px 0 0;font-size:19px}.discord-community-heading p{margin:3px 0 0;font-size:11px}.discord-header-actions{display:flex;align-items:center;gap:6px}.discord-header-actions .close{position:static!important}
+.discord-community-layout{display:grid;grid-template-columns:205px minmax(0,1fr) 190px;min-height:0;flex:1}.discord-channel-sidebar{background:#eef2ef;border-right:1px solid #dce4de;padding:10px 8px;display:flex;flex-direction:column;min-width:0}.discord-side-search input{background:#e4eae5!important;border-color:#d7e0d8!important;padding:9px 10px!important}.discord-side-title{display:flex;align-items:center;justify-content:space-between;padding:14px 6px 6px;color:#717a73;font-size:10px;font-weight:900;letter-spacing:.06em}.discord-side-title button{border:0;background:transparent;color:#68736b;font-size:18px;cursor:pointer}.discord-channel-list{display:grid;gap:2px}.discord-channel-link,.discord-channel-item{width:100%;border:0;background:transparent;color:#58615b;padding:9px 8px;border-radius:8px;text-align:left;display:flex;align-items:center;gap:8px;font-weight:750;cursor:pointer}.discord-channel-item small{margin-left:auto;color:#89938b}.discord-channel-link:hover,.discord-channel-item:hover{background:#e1e8e2}.discord-channel-item.active{background:#d8e9db;color:#126f2c}.discord-user-panel{margin-top:auto;padding:8px;border-radius:9px;background:#e2e8e3;display:flex;align-items:center;gap:7px}.discord-user-avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#cde5d1}.discord-user-panel div{min-width:0;flex:1}.discord-user-panel b,.discord-user-panel small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.discord-user-panel b{font-size:11px}.discord-user-panel small{font-size:9px;color:#168a36}.discord-user-panel button{border:0;background:transparent;cursor:pointer}
+.discord-community-main{min-width:0;display:flex;flex-direction:column;background:#fff}.discord-main-head{height:48px;flex:none;border-bottom:1px solid #e4e8e5;display:flex;align-items:center;justify-content:space-between;padding:0 12px}.discord-main-head b{font-size:14px}.discord-main-head span{font-size:11px;color:#8a928c}.discord-main-tools{display:flex;gap:4px}.discord-main-tools button{border:0;background:transparent;border-radius:8px;padding:7px;cursor:pointer;color:#69736c}.discord-main-tools button:hover{background:#edf2ee}.discord-main-content{min-height:0;flex:1;overflow:hidden}.discord-main-content .community-pane.active{height:100%;display:flex;flex-direction:column}.discord-welcome{padding:22px 18px 12px;color:#657068;flex:none}.discord-welcome-icon{width:46px;height:46px;border-radius:50%;background:#e5f2e7;color:#168a36;display:grid;place-items:center;font-size:25px;font-weight:900;margin-bottom:10px}.discord-welcome h3{margin:0 0 4px;color:#252a26}.discord-welcome p{margin:0;font-size:12px}.discord-chat-box{flex:1!important;height:auto!important;border:0!important;border-radius:0!important;background:#fff!important;padding:8px 16px 12px!important;overflow:auto}.community-chat-message{padding:8px 5px!important;border-bottom:0!important;border-radius:7px}.community-chat-message:hover{background:#f6f8f6}.community-chat-avatar{width:36px!important;height:36px!important}.community-chat-name{font-size:12px}.community-chat-text{font-size:13px}.discord-composer-wrap{padding:8px 14px 12px;background:#fff}.discord-composer{margin:0!important;padding:5px!important;border:1px solid #dce5de;border-radius:12px;background:#f2f5f2;grid-template-columns:auto 1fr auto auto auto!important}.discord-composer input[type=text]{background:transparent!important;border:0!important;outline:none!important}.discord-composer .quick-media-btn,.discord-composer .quick-tool-btn{background:transparent!important;border:0!important;width:38px;height:38px}.discord-composer .send-community-btn{min-height:38px}.discord-thread-area{border-top:1px solid #edf0ee;padding:9px 14px;max-height:180px;overflow:auto;background:#fbfcfb}.discord-thread-area .section-head h3{font-size:12px;margin:0}.discord-member-sidebar{background:#f2f5f2;border-left:1px solid #dce4de;overflow:auto;padding:12px}.discord-member-head{font-size:10px;font-weight:900;color:#717a73;margin-bottom:8px}.discord-member-head span{float:right}.discord-member{display:flex;align-items:center;gap:8px;padding:6px;border-radius:8px}.discord-member:hover{background:#e7ece8}.discord-member-avatar{width:30px;height:30px;border-radius:50%;background:#dce9de;display:grid;place-items:center;flex:none}.discord-member-info{min-width:0}.discord-member-info b,.discord-member-info small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.discord-member-info b{font-size:11px}.discord-member-info small{font-size:9px;color:#7b857d}.discord-member-status{width:7px;height:7px;border-radius:50%;background:#35c759;margin-left:auto}.community-role-manager.hidden{display:none!important}
+@media(max-width:800px){.discord-community-layout{grid-template-columns:170px minmax(0,1fr)}.discord-member-sidebar{display:none}.discord-channel-sidebar{padding:8px 6px}.discord-community-shell{width:100vw!important;height:100vh!important;max-height:none!important;border-radius:0!important}.discord-community-header{min-height:62px}.discord-side-title{padding-top:10px}}
+@media(max-width:560px){.discord-community-layout{grid-template-columns:64px minmax(0,1fr)}.discord-channel-sidebar{padding:8px 5px}.discord-side-search,.discord-side-title span,.discord-channel-item span,.discord-channel-item small,.discord-channel-link span,.discord-user-panel div{display:none}.discord-side-title{justify-content:center}.discord-side-title button{font-size:20px}.discord-channel-item,.discord-channel-link{justify-content:center;font-size:18px;padding:10px}.discord-user-panel{justify-content:center}.discord-user-avatar{width:34px;height:34px}.discord-composer{grid-template-columns:auto 1fr auto auto!important}.discord-composer .send-community-btn{display:none}.discord-welcome{padding:14px 12px 8px}.discord-chat-box{padding:5px 9px 10px!important}.discord-thread-area{max-height:140px;padding:8px 9px}.discord-main-head{padding:0 8px}.discord-main-head span{display:none}}
+</style>
+<style id="ivrsc-icon-system">
+.ui-icon{width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-icon{width:22px;height:22px;margin:auto}
+.nav-label{font-size:9px;line-height:1;margin-top:3px;font-weight:750}
+nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important}
+nav button.plus{font-size:24px!important}
+.nav-live-dot{width:9px;height:9px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.13)}
+.icon-btn .ui-icon{width:20px;height:20px;display:inline-block;vertical-align:middle}
+.chooser-btn .ui-icon{width:25px;height:25px;margin-bottom:5px}
+.chooser-btn b{display:flex;align-items:center;gap:7px}
+</style>
+
+<style id="ivrsc-format-polish">
+body.reels-mode{background:#000!important;color:#fff!important}
+body.reels-mode header{background:#000!important;color:#fff!important;border-bottom-color:#171717!important;box-shadow:none!important}
+body.reels-mode main{background:#000!important;padding:0 0 88px!important;max-width:760px!important}
+body.reels-mode #statusbar{display:none!important}
+body.reels-mode #reels>.card{background:#000!important;border:0!important;box-shadow:none!important;border-radius:0!important;margin:0!important;padding:0!important}
+body.reels-mode #reels .section-head{display:none!important}
+body.reels-mode .reels-feed{height:calc(100vh - 62px)!important;border-radius:0!important}
+body.reels-mode .reel-card{height:calc(100vh - 62px)!important;min-height:0!important;border:0!important;border-radius:0!important;margin:0!important;background:#000!important}
+body.reels-mode nav{background:rgba(10,10,10,.94)!important;border-color:#222!important;box-shadow:0 -5px 20px rgba(0,0,0,.35)!important}
+body.reels-mode nav button{color:#aaa!important}
+body.reels-mode nav button.active{background:#151515!important;color:#8ee6aa!important}
+.live-title-dot{margin-right:7px;vertical-align:2px}
+.nav-live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff0000;box-shadow:0 0 0 3px rgba(255,0,0,.10)}
+.live-preview-badge,.tag.preview-badge{display:inline-flex!important;align-items:center!important;gap:5px!important;padding:5px 9px!important;border-radius:999px!important;background:#eef1ee!important;color:#5f665f!important;border:1px solid #dfe4df!important;font-size:10px!important;font-weight:850!important;letter-spacing:.06em!important}
+.reputation-badge{background:#effaf2!important;color:#168a36!important;border-color:#d2ead8!important}
+.reputation-icon{width:15px!important;height:15px!important;stroke:#168a36!important;fill:none!important;stroke-width:1.8!important}
+.grid-indicator{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;border:1px solid #dfe8e1!important;border-radius:10px!important;background:#f7faf7!important;color:#168a36!important}
+.grid-indicator .ui-icon{width:17px!important;height:17px!important;stroke:currentColor!important;fill:none!important;stroke-width:1.7!important}
+#liveCreateBox .actions .secondary,#communityCreateBox .actions .secondary,#createBox .actions .secondary,#communityThreadBox .actions .secondary{background:transparent!important;border-color:transparent!important;color:#777!important;box-shadow:none!important}
+#liveCreateBox .actions .secondary:hover,#communityCreateBox .actions .secondary:hover,#createBox .actions .secondary:hover,#communityThreadBox .actions .secondary:hover{background:#f3f5f3!important;color:#555!important;border-color:#e4e8e4!important}
+.chooser-btn b{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important}
+.chooser-btn b .ui-icon{width:27px!important;height:27px!important;stroke:currentColor!important;fill:none!important;stroke-width:1.8!important}
+
+.profile-upload-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.profile-upload-card{display:flex!important;flex-direction:column!important;gap:8px!important;padding:12px!important;border:1px solid #dfe8e1!important;border-radius:14px!important;background:#f8fbf8!important;cursor:pointer!important}
+.profile-upload-card input{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
+.profile-upload-card .upload-title{font-weight:800!important;color:#202420!important}
+.profile-upload-card .upload-btn{display:flex!important;align-items:center!important;justify-content:center!important;min-height:38px!important;padding:8px 10px!important;border:1px solid #cfe8d4!important;border-radius:10px!important;background:#effaf1!important;color:#168a36!important;font-weight:750!important;text-align:center!important}
+.profile-upload-card:hover .upload-btn{background:#e4f6e8!important}
+nav button.plus{margin-left:5px!important;margin-right:5px!important}
+@media(max-width:520px){.profile-upload-grid{grid-template-columns:1fr!important}}
+@media(max-width:520px){nav{width:calc(100vw - 12px)!important;border-radius:20px!important}.nav-label{font-size:10px!important}}
+</style>
+
+<style id="feed-reels-live-community-profile-upgrade">
+/* Interacciones y métricas */
+.post-author-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.post-username{font-weight:800}.post-time-dot{color:#9aa19c}.post-actions{display:flex!important;align-items:center!important;gap:7px!important;padding:10px 0 2px!important;border-top:1px solid #eef1ee!important;margin-top:10px!important}.post-actions button{flex:1!important;min-height:38px!important;padding:8px 9px!important}.post-actions button.liked{color:#d92d60!important;background:#fff2f6!important;border-color:#f3c5d5!important}.post-action-icon{width:17px;height:17px;display:inline-block;vertical-align:-4px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.post-head .avatar{width:42px;height:42px}.reel-card{--progress:0%}.reel-progress{position:absolute;left:12px;right:12px;bottom:9px;height:3px;background:rgba(255,255,255,.28);border-radius:999px;z-index:8;overflow:hidden}.reel-progress span{display:block;width:var(--progress);height:100%;background:#fff;border-radius:999px;transition:width .08s linear}.reel-description{position:absolute;left:14px;right:82px;bottom:58px;z-index:6;padding:10px 11px;border-radius:13px;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.58));backdrop-filter:blur(5px);color:#fff}.reel-description .reel-author{font-size:14px}.reel-description .reel-caption{max-width:none;margin-top:4px;font-size:13px}.reel-actions{right:12px;bottom:82px}.reel-action{width:50px;height:50px}.reel-action .action-icon{width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.reel-action small{font-size:9px;line-height:1.1}.live-metrics{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;z-index:5}.live-viewers{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:rgba(0,0,0,.68);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:12px;font-weight:850}.live-viewers svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.live-screen-actions{display:flex;gap:6px}.live-screen-actions button{min-height:34px!important;padding:7px 10px!important;background:rgba(0,0,0,.68)!important;color:#fff!important;border-color:rgba(255,255,255,.18)!important}.live-chat-preview{position:absolute;left:10px;right:10px;bottom:10px;max-height:120px;overflow:hidden;z-index:4;display:grid;gap:4px;pointer-events:none}.live-chat-preview .chat-message{width:max-content;max-width:90%;background:rgba(0,0,0,.55);color:#fff;padding:5px 8px;margin:0;border-radius:10px}.live-chat-preview .chat-author{color:#8ee6aa}.community-activity{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px;font-size:11px;color:#68716b}.community-activity span{padding:4px 7px;border-radius:999px;background:#f3f7f4;border:1px solid #e2e9e4}.profile-achievements{margin-top:14px;padding:12px;border:1px solid #dfe8e1;border-radius:15px;background:#f8fbf8}.achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.achievement{display:flex;gap:9px;align-items:center;padding:9px;border:1px solid #e1e9e3;border-radius:12px;background:#fff}.achievement-mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#effaf1;color:#168a36;font-weight:900;font-size:12px}.achievement small{display:block;color:#737a75;margin-top:2px}.profile-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}.profile-tab{min-height:40px!important;padding:8px 6px!important;background:#f2f6f3!important;color:#68716b!important;border:1px solid #dfe8e1!important}.profile-tab.active{background:#35c759!important;color:#fff!important;border-color:#35c759!important}.profile-community-list{display:grid;gap:8px;padding:4px 0}.profile-community-item{padding:11px;border:1px solid #e1e9e3;border-radius:12px;background:#fff}.profile-community-item b{display:block}.profile-community-item small{color:#737a75}.profile-empty{grid-column:1/-1}.live-report-share{display:flex;gap:7px;margin-top:8px}.live-report-share button{flex:1}.live-chat-live-label{font-size:11px;color:#737a75;padding:7px 10px 0}
+@media(max-width:520px){.achievement-grid{grid-template-columns:1fr}.post-actions{gap:5px}.post-actions button{font-size:12px!important;padding-left:5px!important;padding-right:5px!important}.reel-description{left:10px;right:76px}.live-screen-actions button{font-size:11px!important}}
+
+.post-title{margin:11px 0 0;font-size:18px;line-height:1.25;font-weight:850;color:#202420}.reel-title{font-size:13px;font-weight:850;margin-top:3px}.trend-subtitle{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6f776f;font-weight:850;margin-top:3px}.trend-thread{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:#fff;border:1px solid #e1e9e3!important;border-radius:11px!important;padding:9px 10px!important;margin-top:6px;min-height:48px!important;color:#202420}.trend-thread span{min-width:0}.trend-thread b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trend-thread small{display:block;color:#737a75;margin-top:2px}.trend-thread strong{color:#168a36;flex:none}.reel-card video{background:#000}
+</style>
+
+<style id="feed-data-ui">
+.post-username{font-weight:850}.post-author-line{display:flex;align-items:center;gap:3px}.post-title{margin:11px 0 0;font-size:18px;line-height:1.25}.post-card.demo-post{border-color:#dfe9e1}.post-demo-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#effaf1;color:#168a36;border:1px solid #d2ead8;font-size:10px;font-weight:800;margin-top:9px}.live-status-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:#fff5f5;border:1px solid #f0d9d9}.community-search-wrap{position:relative;margin:8px 0 12px}.community-search-wrap .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:#737a75;fill:none;stroke-width:1.8;pointer-events:none}.community-search-wrap input{padding-left:38px!important;margin:0}.live-chat-preview{position:absolute;right:10px;bottom:10px;width:min(330px,70%);max-height:130px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;pointer-events:none;z-index:3}.live-chat-preview .chat-message{background:rgba(0,0,0,.58);backdrop-filter:blur(7px);color:#fff;margin:3px 0;padding:6px 8px}.reel-card video{background:#000}.reel-progress{position:absolute;left:12px;right:12px;bottom:9px;height:3px;border-radius:99px;background:rgba(255,255,255,.25);z-index:5;overflow:hidden}.reel-progress span{display:block;height:100%;width:0;background:#fff;border-radius:99px;transition:width .08s linear}
+</style>
+
+<style id="feed-form-reels-structure">
+.feed-content-card{background:var(--card,#fff);border:1px solid var(--line,#e8ebe8);border-radius:18px;padding:12px;margin:0 0 16px;box-shadow:0 4px 18px rgba(0,0,0,.05)}
+.feed-highlights:empty{display:none}.feed-posts{display:flex;flex-direction:column;gap:12px;min-height:24px}.feed-posts:empty:before{content:'No hay publicaciones para mostrar todavía.';display:block;padding:28px 14px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+.form-field{display:block;margin:0 0 10px}.form-field>span{display:block;font-size:12px;font-weight:800;margin:0 0 5px;color:var(--text,#111)}.form-field input,.form-field textarea,.form-field select{margin:0}
+.reel-card{isolation:isolate;position:relative;overflow:hidden;z-index:0}.reel-card video{position:absolute;inset:0;z-index:0;display:block;pointer-events:auto}.reel-overlay{z-index:2;pointer-events:none}.reel-description{z-index:6;pointer-events:none}.reel-actions,.reel-sound-btn,.reel-audio,.reel-progress{z-index:8}.reel-actions,.reel-sound-btn{pointer-events:auto}.reel-audio,.reel-progress{pointer-events:none}
+.reel-description,.reel-actions,.reel-sound-btn,.reel-audio,.reel-progress{position:absolute}.reel-card .reel-overlay{position:absolute;inset:0}.reel-card .reel-description{bottom:58px}.reel-card .reel-actions{right:12px;bottom:82px}.reel-card .reel-sound-btn{top:14px;right:14px}
+.comments-sheet #commentsList{min-height:0;overflow-y:auto;flex:1}.comments-sheet .comment-compose{position:relative;flex:none;background:#fff;border-top:1px solid #e9ece9;padding:10px 16px calc(10px + env(safe-area-inset-bottom));z-index:3}.comments-sheet .comment-compose input{flex:1;border:1px solid #d9ded9;background:#f7f8f7;color:#111}.comments-sheet .comment-compose button{min-width:72px}
+</style>
+
+<style id="ivrsc-final-green-polish">
+/* Acabado final: una sola identidad visual clara, verde y limpia */
+header{background:rgba(255,255,255,.97)!important}
+.brand{color:var(--green-dark,#20a843)!important;font-weight:950!important;letter-spacing:.7px!important;text-shadow:none!important}
+.brand span{color:var(--green,#35c759)!important}
+
+/* Para Ti: elimina tarjetas negras y unifica el feed */
+#feed .post-card,#feed .feed-content-card{background:#fff!important;color:#111315!important}
+#feed .post-card{border-color:#e2e9e3!important;box-shadow:0 6px 20px rgba(32,168,67,.07)!important}
+#feed .post-card .post-time,.post-card .muted{color:#737a75!important}
+#feed .post-actions button{background:#f1f8f2!important;color:#236a35!important;border-color:#dceade!important}
+#feed .post-media{background:#edf7ef!important}
+
+/* Crear publicación y demás ventanas: blanco + verde, sin bloques negros */
+.modal{background:#fff!important;color:#111315!important;border-color:#dce8df!important;box-shadow:0 18px 55px rgba(23,92,40,.18)!important}
+.modal h2,.modal h3,.modal b,.modal strong{color:#111315}
+.modal .muted{color:#737a75!important}
+#createChooser .modal,#createBox .modal,#creatorBox .modal,#communityCreateBox .modal,#liveCreateBox .modal{background:linear-gradient(180deg,#ffffff 0%,#f8fcf9 100%)!important}
+#createChooser .modal .chooser-btn{background:linear-gradient(145deg,#f2fbf4,#e9f7ec)!important;color:#17351f!important;border-color:#cfe8d4!important}
+#createChooser .modal .chooser-btn small{color:#6d786f!important}
+#createChooser .modal .chooser-btn:hover{border-color:var(--green)!important;box-shadow:0 8px 20px rgba(53,199,89,.12)!important}
+.close{background:#edf8ef!important;color:#168a36!important;border:1px solid #d2ead7!important}
+
+/* Live: sustituye el bloque negro por una superficie verde profesional */
+#live .card{background:#fff!important;color:#111315!important}
+.live-room{background:#f2faf4!important;border-color:#d7e8da!important}
+.live-screen{background:radial-gradient(circle at 50% 25%,#74df91 0,#35c759 38%,#168a36 100%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)!important}
+.live-screen .live-placeholder{color:#fff!important;text-shadow:0 2px 10px rgba(0,0,0,.22)}
+.live-chat{background:#f4fbf5!important;border-top:1px solid #dceade!important;color:#203126!important}
+.points-bar{background:#eaf8ed!important;border-top:1px solid #d7e9da!important}
+.store{background:#fff!important;border-color:#dce8df!important}
+.reward{border-bottom-color:#e5ece6!important}
+#live .secondary,.live-room .secondary{background:#edf8ef!important;color:#168a36!important;border-color:#cfe8d4!important}
+.live-chat .chat-message{background:#fff!important;border:1px solid #e1ebe3!important;color:#253329!important}
+
+/* Perfil: todo el contenido mantiene la misma superficie clara */
+#profile>.card,#profile .card,#profile .profile-achievements{background:#fff!important;color:#111315!important}
+#profile .profile-grid-item{background:#f5faf6!important;border-color:#dfe9e1!important;color:#253329!important}
+#profile .profile-community-item{background:#fff!important}
+#profile .reputation-badge{background:#edf9ef!important}
+
+/* Pequeños detalles para que el verde no se sienta pesado */
+.section-head h2,.section-head h3{letter-spacing:-.2px}
+.feed-content-card{overflow:hidden}
+#feed .post-card:last-child{margin-bottom:0}
+
+/* En móvil, conserva el acabado sin desbordes */
+@media(max-width:520px){
+  .modal{border-radius:20px!important}
+  .live-screen{min-height:260px}
+  .brand{font-size:22px!important}
+}
+
+/* Pulido UX final */
+.brand{color:#168a36!important}.brand span{color:#35c759!important}
+nav{grid-template-columns:1fr 1fr 64px 1fr 1fr 1fr!important;gap:6px!important}
+nav button{position:relative!important}
+nav button.plus{width:54px!important;height:54px!important;min-height:54px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;margin:auto!important;padding:0!important;border-radius:50%!important}
+nav button.plus .plus-icon{font-size:29px!important;line-height:1!important;font-weight:500!important}
+nav button.plus .plus-label{position:absolute!important;top:calc(100% + 2px)!important;left:50%!important;transform:translateX(-50%)!important;color:#168a36!important;font-size:9px!important;font-weight:850!important;white-space:nowrap!important}
+nav button[aria-label="Live"]{border-left:1px solid #e1e8e2!important;border-radius:0 14px 14px 0!important;padding-left:7px!important}
+.modal-eyebrow{display:block;font-size:9px;letter-spacing:.1em;font-weight:900;color:#168a36;margin-bottom:2px}
+.community-detail .close-row{align-items:flex-start!important}
+.reel-empty-card{min-height:calc(100vh - 180px);border-radius:22px;overflow:hidden;position:relative;background:#101310;border:1px solid #263129;box-shadow:0 10px 35px rgba(0,0,0,.12);display:flex;flex-direction:column;justify-content:flex-end;margin-bottom:14px}
+.reel-empty-visual{position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(53,199,89,.38),transparent 35%),linear-gradient(145deg,#0d110e,#1a261d 55%,#0b0f0c);display:grid;place-items:center}
+.reel-empty-play{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:rgba(53,199,89,.92);color:#fff;font-size:27px;padding-left:4px;box-shadow:0 12px 35px rgba(53,199,89,.3)}
+.reel-empty-info{position:relative;z-index:2;padding:22px 18px 20px;background:linear-gradient(transparent,rgba(0,0,0,.92) 28%);color:#fff;display:flex;flex-direction:column;gap:7px}
+.reel-empty-info strong{font-size:20px}.reel-empty-info span{font-size:12px;color:#d5ddd7;line-height:1.45}.reel-empty-info .primary{align-self:flex-start;margin-top:5px}
+.form-field select,.form-field input,.form-field textarea{width:100%;box-sizing:border-box}
+</style>
+
+<style id="ivrsc-v10-ux-fix">
+/* v10 — jerarquía visual y controles móviles */
+nav{background:#ffffff!important;border:1px solid #dfe8e1!important;box-shadow:0 10px 30px rgba(27,72,39,.14)!important;grid-template-columns:1fr 1fr 72px 1fr 1fr 1fr!important}
+nav button{border:1px solid transparent!important;color:#68716b!important}
+nav button:not(.plus):hover{background:#f3f8f4!important}
+nav button[aria-label="Live"]{border-left:2px solid #dfe8e1!important;padding-left:8px!important}
+nav button.plus{width:58px!important;height:58px!important;background:linear-gradient(145deg,#45d46b,#20a843)!important;border:4px solid #fff!important;outline:1px solid #cfe5d4!important;box-shadow:0 8px 22px rgba(32,168,67,.28)!important}
+nav button.plus .plus-icon{font-size:31px!important}
+nav button.plus .plus-label{top:calc(100% + 3px)!important;color:#168a36!important;background:#fff!important;padding:2px 7px!important;border-radius:999px!important;border:1px solid #dce8df!important;box-shadow:0 3px 8px rgba(0,0,0,.05)!important}
+
+/* Los modales de foro son secundarios: menos parecido a una pantalla */
+#communityDetailBox{background:rgba(17,29,20,.58)!important;backdrop-filter:blur(5px)!important}
+#communityDetailBox .community-detail{width:min(94vw,620px)!important;border-radius:20px!important;border-top:4px solid #35c759!important}
+#communityDetailBox .community-detail h2{font-size:21px!important}
+#communityDetailBox .modal-eyebrow{letter-spacing:.12em!important}
+#communityThreadBox .modal,#commentsBox .comments-sheet{border-top:4px solid #35c759!important}
+
+/* Campos realmente reconocibles como campos */
+.form-field{background:#f8fbf9!important;border:1px solid #dfe9e1!important;border-radius:13px!important;padding:9px!important;margin-bottom:9px!important}
+.form-field>span{color:#168a36!important;font-size:11px!important;text-transform:uppercase!important;letter-spacing:.03em!important}
+.form-field input,.form-field textarea,.form-field select{background:#fff!important;border:1px solid #ccd9cf!important;color:#1c241f!important;min-height:44px!important}
+.form-field textarea{min-height:105px!important}
+.form-field input::placeholder,.form-field textarea::placeholder{color:#9aa39d!important}
+.form-field input:focus,.form-field textarea:focus,.form-field select:focus{border-color:#35c759!important;box-shadow:0 0 0 3px rgba(53,199,89,.12)!important}
+#postCommunity{background:#fff!important;color:#1c241f!important;border:1px solid #ccd9cf!important;min-height:44px!important;margin:0 0 10px!important}
+.crosspost-check{padding:10px 11px!important;background:#f1f8f2!important;border:1px solid #d6e7d9!important;border-radius:12px!important;color:#31503a!important}
+.crosspost-check input{width:19px!important;height:19px!important;accent-color:#35c759!important;margin:0!important}
+
+/* Feed: tarjetas claras, compactas y claramente interactivas */
+#feed .feed-content-card{padding:10px!important}
+#feed .post-card{padding:14px!important;border-radius:17px!important}
+#feed .post-actions button{min-height:42px!important;background:#f6faf7!important}
+#feed .feed-posts{gap:10px!important}
+
+/* Reels: estructura visible incluso antes del primer video */
+.reel-empty-card{border:1px solid #dbe7de!important}
+.reel-empty-play{box-shadow:0 10px 30px rgba(53,199,89,.35)!important}
+.reel-card .reel-action,.reel-card .reel-sound-btn{box-shadow:0 5px 18px rgba(0,0,0,.24)!important}
+.reel-card .reel-actions{pointer-events:auto!important}
+
+/* Búsqueda, notificaciones y comentarios: componentes visuales completos */
+.search-box-wrap{display:flex;align-items:center;gap:8px;background:#f7faf8;border:1px solid #d9e5db;border-radius:14px;padding:5px 6px 5px 0}
+.search-box-wrap input{border:0!important;background:transparent!important;box-shadow:none!important;flex:1;min-width:0}
+.search-clear-btn{width:40px;height:40px;border:0;border-radius:11px;background:#eaf3ec;color:#3b4b40;font-weight:900;cursor:pointer}
+.notification-list{display:grid;gap:9px;margin-top:12px}
+.notification-card{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid #dfe8e1;border-radius:15px;background:#fff}
+.notification-avatar,.comment-avatar{width:40px;height:40px;min-width:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#dff3e2,#bde3c5);color:#167b31;font-weight:900;border:1px solid #cfe3d3}
+.notification-main{min-width:0;flex:1}
+.notification-main b{display:block;font-size:13px;color:#18211b}
+.notification-main small{display:block;color:#737a75;margin-top:3px}
+.notification-type{font-size:10px;font-weight:900;padding:5px 7px;border-radius:999px;background:#edf8ef;color:#168a36}
+.account-welcome{align-items:flex-start;flex-wrap:wrap}
+.account-inline{display:flex;gap:7px;width:100%;margin-top:8px}
+.account-inline input{flex:1;min-width:0;min-height:42px;border:1px solid #ccd9cf;border-radius:11px;padding:9px 11px;background:#fff;color:#18211b}
+.reel-share-float{position:absolute;right:13px;bottom:154px;z-index:9;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.58);color:#fff;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer}
+.reel-share-float svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2}
+.simulated-note{font-size:10px;color:#7a857d;margin-left:auto}
+
+/* Comentarios: caja de escritura siempre visible */
+.comments-sheet .comment-compose{display:flex!important;gap:8px!important}
+.comments-sheet .comment-compose input{min-height:44px!important;margin:0!important}
+
+@media(max-width:430px){
+ nav{grid-template-columns:1fr 1fr 62px 1fr 1fr 1fr!important;gap:3px!important;padding-left:5px!important;padding-right:5px!important}
+ nav button.plus{width:54px!important;height:54px!important}
+ nav button[aria-label="Live"]{padding-left:5px!important}
+ .nav-label{font-size:9px!important}
+}
+<style id="camera-screen-capture-polish">
+.live-webcam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#07130b;z-index:1}
+.live-screen.camera-active .live-placeholder{z-index:2;background:rgba(0,0,0,.28);padding:12px 16px;border-radius:14px;backdrop-filter:blur(4px)}
+.live-screen .live-metrics,.live-screen .live-chat-preview{z-index:5}
+.live-camera-status{position:absolute;left:10px;bottom:10px;z-index:6;padding:6px 9px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff;font-size:11px}
+.capture-controls{display:grid;gap:8px;margin-top:10px}.capture-status{font-size:12px;color:#737a75;padding:8px 10px;background:#f3f7f4;border:1px solid #dfe8e1;border-radius:10px}
+@media(max-width:560px){.live-webcam{object-fit:cover}}
+</style>
+</style>
+
+<style id="community-complete-upgrade">
+.role-badge.role-creator{background:#fff4d6;color:#9a6700;border-color:#efd38a}.role-badge.role-mod{background:#eef3ff;color:#3158a6;border-color:#cbd8ff}.role-badge.role-vip{background:#fff0f7;color:#b72d75;border-color:#f2c1da}.role-badge.role-custom{background:#edf8ef;color:#168a36;border-color:#cfe8d4}
+.community-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0}.community-tab{min-height:40px;background:#f3f7f4;color:#657067;border:1px solid #dfe8e1;border-radius:11px;font-weight:850}.community-tab.active{background:#35c759;color:#fff;border-color:#35c759}
+.community-pane{display:none}.community-pane.active{display:block}.community-chat-box{height:300px;overflow:auto;border:1px solid #dfe8e1;border-radius:14px;background:#f8fbf9;padding:10px}.community-chat-message{display:flex;gap:8px;padding:8px 5px;border-bottom:1px solid #e7eee8}.community-chat-message:last-child{border-bottom:0}.community-chat-avatar{width:32px;height:32px;border-radius:50%;background:#e7f5ea;display:grid;place-items:center;flex:none}.community-chat-body{min-width:0;flex:1}.community-chat-head{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.community-chat-name{font-weight:900}.community-chat-text{margin-top:2px;line-height:1.4;word-break:break-word}.community-chat-media{max-width:220px;max-height:180px;border-radius:10px;margin-top:7px;display:block}.community-chat-compose{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:6px;margin-top:8px;align-items:center}.quick-media-btn,.quick-tool-btn{width:42px;height:42px;padding:0!important;border-radius:11px!important;background:#f1f7f2!important;color:#168a36!important;border:1px solid #d6e6d9!important}.community-chat-compose input[type=text]{margin:0;min-height:42px}.community-chat-compose input[type=file]{display:none}.chat-tools-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.mini-poll{margin-top:7px;padding:9px;border:1px solid #dfe8e1;border-radius:11px;background:#f4faf5}.mini-poll-option{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:6px;padding:7px;border-radius:9px;background:#fff;border:1px solid #e0e8e1}.voice-list,.event-list{display:grid;gap:8px}.voice-room,.event-card{border:1px solid #dfe8e1;border-radius:14px;padding:11px;background:#fff}.voice-room{display:flex;justify-content:space-between;gap:10px;align-items:center}.voice-room small,.event-card small{color:#737a75}.voice-live{color:#168a36;font-weight:900}.voice-status{padding:9px 10px;border-radius:11px;background:#edf8ef;border:1px solid #cfe8d4;color:#168a36;margin-bottom:9px}.event-card{display:grid;gap:6px}.event-actions{display:flex;gap:7px;flex-wrap:wrap}.event-going{background:#eaf8ed!important;color:#168a36!important;border-color:#cfe8d4!important}.event-create{padding:10px;border:1px dashed #cfe0d2;border-radius:12px;background:#f8fbf9;margin-bottom:10px}.community-live-count{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#f0f8f2;color:#168a36;font-size:11px;font-weight:850}.community-live-count i{width:7px;height:7px;border-radius:50%;background:#35c759;display:inline-block;box-shadow:0 0 0 3px rgba(53,199,89,.12)}
+@media(max-width:520px){.community-chat-compose{grid-template-columns:42px 42px 1fr 42px}.community-chat-compose .voice-note-btn{grid-column:2}.community-chat-compose .send-community-btn{grid-column:4}.community-chat-compose input[type=text]{grid-column:3;grid-row:1}.community-chat-compose label{grid-row:1}.community-chat-compose .poll-open-btn{grid-column:1;grid-row:2}.community-chat-compose .voice-note-btn{grid-column:2;grid-row:2}.community-chat-compose .send-community-btn{grid-column:4;grid-row:2}.community-chat-compose{margin-bottom:4px}}
+</style>
+
+<style id="ivrsc-real-network-upgrade">
+.global-search-btn{position:relative}.search-modal{max-width:680px}.search-box-wrap{position:relative}.search-box-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:19px;height:19px;stroke:#737a75;fill:none;stroke-width:1.8}.search-box-wrap input{padding-left:42px!important}.search-results{display:grid;gap:8px;margin-top:12px;max-height:55vh;overflow:auto}.search-result{display:flex;gap:10px;align-items:center;padding:11px;border:1px solid #dfe8e1;border-radius:13px;background:#fff}.search-result-main{min-width:0;flex:1}.search-result-main b,.search-result-main small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-result-main small{color:#737a75;margin-top:3px}.search-kind{font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px;background:#edf8ef;color:#168a36;white-space:nowrap}.follow-btn{min-width:92px}.follow-btn.following{background:#eef6ef!important;color:#168a36!important;border-color:#cfe4d2!important}.profile-social-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.profile-social-row button{border:1px solid #dfe8e1;background:#f7faf8;color:#168a36;border-radius:10px;padding:7px 10px;font-weight:800;cursor:pointer}.trust-note{padding:10px 12px;border:1px solid #d8e8db;background:#f3faf4;color:#31503a;border-radius:12px;font-size:12px;margin-top:10px}.account-welcome{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:11px 12px;border:1px solid #d8e8db;background:#f4faf5;border-radius:14px}.account-welcome .grow{flex:1;min-width:0}.account-welcome button{white-space:nowrap}.empty-search{padding:20px;text-align:center;color:#737a75;border:1px dashed #d7e3d9;border-radius:13px}
+@media(max-width:520px){.global-search-btn{display:none}.search-modal{width:calc(100vw - 24px)}.search-results{max-height:62vh}.follow-btn{min-width:78px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">IVR<span>SC</span></div>
+  <div class="header-actions"><button class="icon-btn global-search-btn" onclick="openGlobalSearch()" aria-label="Buscar en IVRSC"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg></button><button class="icon-btn" onclick="showNotifications()" aria-label="Notificaciones"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span id="notificationCount">0</span></button></div>
+</header>
+<main>
+  <div id="statusbar" class="statusbar">Vista previa local · tus cambios se guardan en este navegador.</div>
+    <div id="accountWelcome" class="account-welcome hidden"><div class="grow"><b id="welcomeTitle">Tu cuenta en IVRSC</b><div id="welcomeText" class="muted" style="font-size:12px;margin-top:2px">Completa tu nombre para que otras personas puedan reconocerte.</div></div><button class="secondary" onclick="dismissAccountWelcome()">Ahora no</button><div class="account-inline"><input id="welcomeNameInput" maxlength="60" placeholder="Escribe tu nombre"><button class="primary" onclick="saveWelcomeName()">Guardar</button></div></div>
+
+  <section id="feed">
+    <div class="section-head"><div><h2>Para Ti</h2><p class="muted">Publicaciones de tu comunidad.</p></div></div>
+    <article class="feed-content-card" aria-label="Publicaciones de Para Ti">
+      <div id="hybridFeed" class="feed-highlights"></div>
+      <div id="posts" class="feed-posts" aria-live="polite"></div>
+    </article>
+  </section>
+
+  <section id="reels" class="hidden">
+    <div class="section-head"><div><h2>Reels</h2><p class="muted">Desliza para cambiar de video.</p></div></div>
+    <div id="reelPosts" class="reels-feed"></div>
+  </section>
+
+  <section id="live" class="hidden">
+    <div class="card">
+      <div class="section-head"><div><h2><span class="nav-live-dot" style="display:inline-block;vertical-align:2px;margin-right:6px"></span>Live</h2><p class="muted">Vista previa del sistema de directos.</p></div><span class="live-status-icon" aria-label="Estado del Live"><span class="nav-live-dot"></span></span></div>
+      <div id="liveDirectory"></div>
+    </div>
+    <div id="watchRoom" class="card hidden"></div>
+  </section>
+
+  <section id="community" class="hidden">
+    <div class="card">
+      <div class="section-head"><div><h2><svg class="ui-icon" style="display:inline-block;vertical-align:-5px" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c.6-3 2.5-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M14 14.5c3.4-.2 5.5 1.3 6.5 4.5"/></svg> Comunidad</h2><p class="muted">Foros por tema, sin comunidades falsas.</p></div></div>
+      <div class="community-search-wrap"><svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="communitySearch" class="community-search" type="search" placeholder="Buscar comunidades, foros o etiquetas..." oninput="renderCommunities()"></div>
+      <div class="trends-card"><b>🔥 Tendencias de hoy</b><div id="communityTrends"></div></div>
+      <div class="category-row" id="categoryRow"></div>
+      <div id="communities"></div>
+    </div>
+  </section>
+
+  <section id="profile" class="hidden profile-only">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div id="profileCover" class="profile-cover"><div id="profileAvatar" class="profile-avatar-lg"></div></div>
+      <div class="profile-head">
+        <div class="profile-name-row"><span id="profileDisplayName" class="profile-name">Tu perfil</span><span id="profileBadge" class="verified">✓ Verificado</span></div>
+        <div id="profilePronounsDisplay" class="pronouns"></div>
+        <div id="profileBioDisplay" class="profile-bio muted">Sin descripción todavía.</div><div id="profileLinksDisplay"></div>
+        <div class="profile-stats"><span><b id="profilePostCount">0</b> publicaciones</span><span><b id="profileFollowerCount">0</b> seguidores</span></div><div class="reputation-badge"><svg class="ui-icon reputation-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg><span>Reputación</span><b id="profileKarma">0</b><span>karma</span></div><div id="accountModeNote" class="muted" style="margin-top:10px;font-size:12px"></div>
+        <div class="card" style="margin:14px 0 0;padding:12px;background:#111216">
+          <details>
+            <summary style="cursor:pointer;font-weight:800">✏️ Personalizar perfil</summary>
+            <input id="profileName" maxlength="60" placeholder="Tu nombre">
+            <input id="profilePronouns" maxlength="40" placeholder="Pronombres (opcional), por ejemplo: él/lo">
+            <textarea id="profileBio" maxlength="1000" rows="5" placeholder="Escribe una descripción de tu perfil..."></textarea>
+            <input id="profileLinks" maxlength="1000" placeholder="Enlaces (separados por comas): https://ejemplo.com, https://...">
+            <div class="profile-upload-grid">
+              <label class="profile-upload-card" for="profileAvatarFile"><span class="upload-title">Foto de perfil</span><span class="upload-btn">Seleccionar foto</span><input id="profileAvatarFile" type="file" accept="image/*"></label>
+              <label class="profile-upload-card" for="profileCoverFile"><span class="upload-title">Portada</span><span class="upload-btn">Seleccionar portada</span><input id="profileCoverFile" type="file" accept="image/*"></label>
+            </div>
+            <div class="actions"><button class="primary" onclick="saveProfile()">Guardar perfil</button></div>
+          </details>
+        </div>
+      </div>
+    </div>
+    <div class="profile-achievements"><div class="section-head"><h3>Logros y emblemas</h3><span class="muted" style="font-size:11px">Tu actividad</span></div><div id="profileAchievements" class="achievement-grid"></div></div><div class="card"><div class="profile-tabs"><button class="profile-tab active" data-profile-tab="posts" onclick="setProfileTab('posts')">Mis publicaciones</button><button class="profile-tab" data-profile-tab="reels" onclick="setProfileTab('reels')">Mis Reels</button><button class="profile-tab" data-profile-tab="communities" onclick="setProfileTab('communities')">Comunidades</button></div><div id="profileGrid" class="profile-grid"></div></div>
+    <div class="card"><div id="profileLiveBox"></div></div>
+  </section>
+</main>
+
+<nav aria-label="Navegación principal">
+  <button class="active" aria-label="Para Ti" onclick="page('feed',this)"><svg class="ui-icon nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg><span class="nav-label">Para Ti</span></button>
+  <button aria-label="Reels" onclick="page('reels',this)"><svg class="ui-icon nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m8 4 3 5"/><path d="m14 4 3 5"/><path d="M10 13.5 15 16l-5 2.5z"/></svg><span class="nav-label">Reels</span></button>
+  <button class="plus" aria-label="Crear contenido" onclick="openCreateChooser()"><span class="plus-icon">+</span><span class="nav-label plus-label">Crear</span></button>
+  <button aria-label="Live" onclick="page('live',this)"><span class="nav-live-dot" aria-hidden="true"></span><span class="nav-label">Live</span></button>
+  <button aria-label="Comunidad" onclick="page('community',this)"><svg class="ui-icon nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c.6-3 2.5-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M14 14.5c3.4-.2 5.5 1.3 6.5 4.5"/></svg><span class="nav-label">Comunidad</span></button>
+  <button aria-label="Perfil" onclick="page('profile',this)"><svg class="ui-icon nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c.8-4 3.1-6 7-6s6.2 2 7 6"/></svg><span class="nav-label">Perfil</span></button>
+</nav>
+
+<div id="communityDetailBox" class="overlay hidden"><div class="modal community-detail discord-community-shell">
+  <div class="discord-community-header">
+    <div class="discord-server-icon" id="communityServerIcon">C</div>
+    <div class="discord-community-heading"><h2 id="communityDetailTitle">Comunidad</h2><p id="communityDetailMeta" class="muted"></p></div>
+    <div class="discord-header-actions"><button class="secondary" onclick="joinCurrentCommunity()">Unirse</button><button class="close" onclick="closeCommunityDetail()">✕</button></div>
+  </div>
+  <div class="discord-community-layout">
+    <aside class="discord-channel-sidebar">
+      <div class="discord-side-search"><input id="communityChannelSearch" type="search" placeholder="Buscar canales…" oninput="renderCommunityChannelSidebar()"></div>
+      <div class="discord-side-title"><span>CANALES DE TEXTO</span><button onclick="addCommunityTextChannel()" title="Crear canal">＋</button></div>
+      <div id="communityTextChannels" class="discord-channel-list"></div>
+      <div class="discord-side-title"><span>CANALES DE VOZ</span><button onclick="addCommunityVoiceChannel()" title="Crear sala">＋</button></div>
+      <div id="communityVoiceChannelsMini" class="discord-channel-list"></div>
+      <div class="discord-side-title"><span>EVENTOS</span></div>
+      <button class="discord-channel-link" onclick="setCommunityPane('events')">📅 <span>Eventos</span></button>
+      <div class="discord-user-panel"><span class="discord-user-avatar">👤</span><div><b>Usuario</b><small><i class="discord-online-dot"></i> En línea</small></div><button onclick="toggleCommunityMic()" id="communityMicToggle" title="Micrófono">🎙️</button></div>
+    </aside>
+    <main class="discord-community-main">
+      <div class="discord-main-head"><div class="discord-channel-title-wrap"><button class="discord-back-btn" type="button" onclick="closeCommunityDetail()" title="Volver a la comunidad" aria-label="Volver a la comunidad">←</button><div><b id="communityChannelTitle"># general</b><span id="communityChannelTopic"> · Chat de la comunidad</span></div></div><div class="discord-main-tools"><button onclick="toggleCommunityMembers()" title="Miembros">👥</button><button onclick="openRoleManager()" title="Roles">🏷️</button><button onclick="showCommunityInfo()" title="Información">ⓘ</button></div></div>
+      <div class="discord-main-content">
+        <div id="communityPaneChat" class="community-pane active">
+          <div id="communityDetailDescription" class="discord-welcome"><div class="discord-welcome-icon">#</div><h3>Bienvenido a #general</h3><p>Este es el comienzo del canal. Habla con la comunidad sin tener que crear una publicación formal.</p></div>
+          <div id="communityChatBox" class="community-chat-box discord-chat-box"></div>
+          <div id="communityPollComposer" class="event-create hidden"><b>📊 Crear encuesta rápida</b><label class="form-field"><span>Pregunta</span><input id="communityPollQuestion" maxlength="180" placeholder="¿Qué hacemos hoy?"></label><label class="form-field"><span>Opciones</span><input id="communityPollOptions" maxlength="300" placeholder="Opción 1, Opción 2, Opción 3"></label><div class="actions"><button class="primary" onclick="sendCommunityPoll()">Publicar encuesta</button><button class="secondary" onclick="closeCommunityPoll()">Cancelar</button></div></div>
+          <div class="discord-composer-wrap"><div id="communityVoiceNoteStatus" class="capture-status hidden">🎙️ Grabando nota de voz… pulsa el micrófono para detener.</div><div class="community-chat-compose discord-composer"><label class="quick-media-btn" title="Imagen o GIF"><span>＋</span><input id="communityMediaFile" type="file" accept="image/*,.gif,image/gif"></label><input id="communityChatInput" type="text" maxlength="1000" placeholder="Escribe en #general" onkeydown="if(event.key==='Enter')sendCommunityQuickChat()"><button class="quick-tool-btn" onclick="openCommunityPoll()" title="Encuesta">📊</button><button class="quick-tool-btn voice-note-btn" onclick="toggleCommunityVoiceNote()" title="Nota de voz">🎙️</button><button class="primary send-community-btn" onclick="sendCommunityQuickChat()">Enviar</button></div></div>
+          <div class="discord-thread-area"><div class="section-head"><h3>Temas y publicaciones</h3><button class="secondary" onclick="openCommunityThreadComposer()">＋ Nueva publicación</button></div><div id="communityThreads"></div></div>
+        </div>
+        <div id="communityPaneVoice" class="community-pane"><div id="communityVoiceStatus"></div><div id="communityVoiceRooms" class="voice-list"></div></div>
+        <div id="communityPaneEvents" class="community-pane"><div class="event-create"><b>📅 Eventos de la comunidad</b><div class="actions"><button class="secondary" onclick="openCommunityEventComposer()">＋ Nuevo evento</button></div></div><div id="communityEvents" class="event-list"></div></div>
+      </div>
+    </main>
+    <aside id="communityMemberSidebar" class="discord-member-sidebar"><div class="discord-member-head">MIEMBROS <span id="communityMemberCount">0</span></div><div id="communityMembersList"></div></aside>
+  </div>
+  <div id="communityRoleManager" class="community-role-manager"></div>
+</div></div>
+<div id="communityThreadBox" class="overlay hidden"><div class="modal"><div class="close-row"><h2>Nueva publicación del foro</h2><button class="close" onclick="closeCommunityThreadComposer()">✕</button></div><label class="form-field"><span>Título del tema</span><input id="threadTitle" maxlength="120" placeholder="Escribe el título del tema"></label><label class="form-field"><span>Contenido</span><textarea id="threadBody" maxlength="3000" rows="6" placeholder="Escribe el contenido... También puedes mencionar a alguien con @usuario"></textarea></label><label class="form-field"><span>Etiquetas</span><input id="threadTags" maxlength="300" placeholder="#ayuda, #gaming"></label><div class="actions"><button class="primary" onclick="createCommunityThread()">Publicar en la comunidad</button><button class="secondary" onclick="closeCommunityThreadComposer()">Cancelar</button></div></div></div>
+<div id="commentsBox" class="overlay comments-sheet-overlay hidden"><div class="modal comments-modal comments-sheet"><div class="comments-handle" aria-hidden="true"></div><div class="close-row"><h2>Comentarios</h2><button class="close" onclick="closeComments()" aria-label="Cerrar comentarios">✕</button></div><div id="commentsList"></div><div class="comment-compose"><input id="commentInput" maxlength="1000" placeholder="Escribe un comentario... Usa @usuario"><button class="primary" onclick="addComment()" aria-label="Enviar comentario">Enviar</button></div></div></div><div id="clipBox" class="overlay hidden"><div class="modal"><div class="close-row"><h2>✂️ Crear Reel desde Live</h2><button class="close" onclick="closeClipComposer()">✕</button></div><p class="muted">Puedes subir un clip existente o capturar un fragmento de tu pantalla con permiso del sistema.</p><div class="capture-controls"><button id="startScreenCaptureBtn" class="primary" type="button" onclick="startScreenCapture()">🎥 Grabar pantalla</button><button id="stopScreenCaptureBtn" class="danger hidden" type="button" onclick="stopScreenCapture()">⏹ Detener grabación</button><div id="captureStatus" class="capture-status">No hay una captura en curso.</div></div><input id="clipFile" type="file" accept="video/*"><div class="actions"><button class="primary" onclick="createReelFromClip()">Crear Reel</button><button class="secondary" onclick="closeClipComposer()">Cancelar</button></div></div></div>
+<div id="createChooser" class="overlay hidden"><div class="modal">
+  <div class="close-row"><h2>¿Qué quieres crear?</h2><button class="close" onclick="closeCreateChooser()">✕</button></div>
+  <div class="chooser-grid">
+    <button class="chooser-btn" onclick="closeCreateChooser();openCreate('reel')"><b><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m8 4 3 5"/><path d="m14 4 3 5"/><path d="M10 13.5 15 16l-5 2.5z"/></svg> Reel:</b><small>Sube un video vertical.</small></button>
+    <button class="chooser-btn" onclick="closeCreateChooser();openCreate('post')"><b><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg> Publicación:</b><small>Texto, imagen, video o enlace.</small></button>
+    <button class="chooser-btn" onclick="closeCreateChooser();openCommunityCreate()"><b><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c.6-3 2.5-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M14 14.5c3.4-.2 5.5 1.3 6.5 4.5"/></svg> Comunidad:</b><small>Crea un foro y añade tags.</small></button>
+    <button class="chooser-btn" onclick="closeCreateChooser();openLiveCreate()"><b><span class="nav-live-dot" aria-hidden="true"></span> Live:</b><small>Configura tu transmisión.</small></button>
+  </div>
+</div></div>
+
+<div id="createBox" class="overlay hidden"><div class="modal">
+  <div class="close-row"><h2 id="createTitle">Nueva publicación</h2><button class="close" onclick="closeCreate()">✕</button></div>
+  <label class="form-field"><span>Título</span><input id="postTitle" maxlength="140" placeholder="Título de la publicación"></label>
+  <label class="form-field"><span>Contenido</span><textarea id="caption" maxlength="2000" rows="5" placeholder="¿Qué quieres publicar?"></textarea></label>
+  <label class="form-field"><span>Imagen o video</span><input id="media" type="file" accept="image/*,video/*"></label>
+  <label class="form-field"><span>Enlace opcional</span><input id="postLink" type="url" maxlength="1000" placeholder="Pega un enlace, como en Reddit"></label><select id="postCommunity"><option value="">Sin publicar en un foro</option></select><label class="crosspost-check"><input id="postAsTutorial" name="postAsTutorial" type="checkbox" value="1"> <span>Indexar este Reel como tutorial en el foro elegido</span></label>
+  <p class="muted" style="font-size:12px">Los datos se sincronizan con el servidor y el teléfono guarda una copia local para no volver a descargar todo cada vez.</p>
+  <div class="actions"><button class="primary" onclick="publish()">Publicar</button><button class="secondary" onclick="closeCreate()">Cancelar</button></div>
+</div></div>
+
+<div id="communityCreateBox" class="overlay hidden"><div class="modal">
+  <div class="close-row"><h2>Crear comunidad</h2><button class="close" onclick="closeCommunityCreate()">✕</button></div>
+  <label class="form-field"><span>Nombre</span><input id="communityName" maxlength="60" placeholder="Nombre de comunidad"></label>
+  <label class="form-field"><span>Categoría</span><select id="communityCategory"><option>Videojuegos</option><option>Just Chatting</option><option>Música</option><option>Arte</option><option>Cocina</option><option>Estilo de vida</option></select></label>
+  <label class="form-field"><span>Descripción</span><textarea id="communityDescription" maxlength="300" rows="4" placeholder="¿De qué tratará esta comunidad?"></textarea></label>
+  <label class="form-field"><span>Etiquetas</span><input id="communityTags" maxlength="300" placeholder="Repostería, Postres, Pasteles"></label>
+  <div class="actions"><button class="primary" onclick="createCommunity()">Crear comunidad</button><button class="secondary" onclick="closeCommunityCreate()">Cancelar</button></div>
+</div></div>
+
+<div id="liveCreateBox" class="overlay hidden"><div class="modal">
+  <div class="close-row"><h2><span class="nav-live-dot live-title-dot" aria-hidden="true"></span>Crear Live</h2><button class="close" onclick="closeLiveCreate()">✕</button></div>
+  <p class="muted">Configura tu transmisión y revisa cómo se verá antes de salir en directo.</p>
+  <label class="form-field"><span>Título del directo</span><input id="liveTitle" maxlength="100" placeholder="Ej. Jugando con la comunidad"></label>
+  <label class="form-field"><span>Categoría</span><select id="liveCategory"><option>Videojuegos</option><option>Just Chatting</option><option>Música</option><option>Arte</option><option>Cocina</option><option>Estilo de vida</option></select></label>
+  <label class="form-field"><span>Emotes de texto</span><input id="liveEmotes" maxlength="200" placeholder="🔥, 😂, ❤️, GG"></label>
+  <div id="customEmoteManager" class="custom-emote-manager"></div>
+  <label class="form-field"><span>Interacción previa</span><select id="liveInteractionType"><option value="none">Sin interacción</option><option value="question">Pregunta del día</option><option value="poll">Encuesta</option></select></label>
+  <label class="form-field"><span>Pregunta</span><input id="liveQuestion" maxlength="240" placeholder="Pregunta del día o pregunta de la encuesta"></label>
+  <label class="form-field"><span>Opciones de encuesta</span><input id="livePollOptions" maxlength="300" placeholder="Ej. Sí, No, Tal vez"></label>
+  <label class="form-field"><span>Moderadores</span><input id="liveModerators" maxlength="300" placeholder="Usuarios separados por comas"></label>
+  <p class="muted" style="font-size:12px">Puedes preparar la pregunta/encuesta y los moderadores antes de iniciar el Live.</p>
+  <div class="actions"><button class="primary" onclick="startPreviewLive()">📹 Iniciar Live de prueba</button><button class="secondary" onclick="closeLiveCreate()">Cancelar</button></div><p class="muted" style="font-size:11px">Al iniciar, IVRSC solicitará permiso para usar la cámara y el micrófono de este dispositivo.</p>
+</div></div>
+
+<div id="notificationsBox" class="overlay hidden"><div class="modal">
+  <div class="close-row"><h2><svg class="ui-icon" style="display:inline-block;vertical-align:-5px" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg> Notificaciones</h2><button class="close" onclick="closeNotifications()">✕</button></div><div class="notification-tabs"><button id="notifTabInteractions" class="notification-tab active" onclick="setNotificationTab('interactions')">Interacciones</button><button id="notifTabMentions" class="notification-tab" onclick="setNotificationTab('mentions')">Menciones y Mensajes</button></div><div id="notificationList" class="notification-list"></div>
+</div></div>
+
+<div id="globalSearchBox" class="overlay hidden"><div class="modal search-modal">
+  <div class="close-row"><h2>🔎 Buscar en IVRSC</h2><button class="close" onclick="closeGlobalSearch()">✕</button></div>
+  <div class="search-box-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="globalSearchInput" type="search" maxlength="80" placeholder="Busca personas, publicaciones o comunidades…" oninput="renderGlobalSearch()" autocomplete="off"><button class="search-clear-btn" type="button" onclick="clearGlobalSearch()" aria-label="Borrar búsqueda">✕</button></div>
+  <div id="globalSearchResults" class="search-results"><div class="empty-search">Escribe algo para buscar en IVRSC.</div></div>
+</div></div>
+<div id="creatorBox" class="overlay hidden"><div class="modal"><div class="close-row"><h2 id="creatorTitle">Perfil</h2><button class="close" onclick="closeCreatorProfile()">✕</button></div><p id="creatorInfo" class="muted"></p><div id="creatorActions"></div></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const STATE_KEY='ivrsc_server_cache_v2';
+const OWNER_KEY='ivrsc_owner_account_v1';
+const ROLE_KEY='ivrsc_account_role_v1';
+const CLIENT_ID_KEY='ivrsc_client_id_v1';
+const DB_NAME='ivrsc_media_cache_v2';
+const DB_STORE='media';
+const API_BASE='';
+const CATEGORIES=['Todos','Videojuegos','Just Chatting','Música','Arte','Cocina','Estilo de vida'];
+const clientId=localStorage.getItem(CLIENT_ID_KEY)||(()=>{const x=uid();localStorage.setItem(CLIENT_ID_KEY,x);return x})();
+let state=loadState();
+let activeCategory='Todos';
+let communitySearchText='';
+let createMode='post';
+let notificationTab='interactions';
+let points=Number(localStorage.getItem('ivrsc_channel_points_v1')||0);
+let highlightNext=false;
+let vipUntil=Number(localStorage.getItem('ivrsc_vip_until_v1')||0);
+let communityVoiceStream=null,communityVoiceRecorder=null,communityVoiceChunks=[],communityVoiceRoomId=null,communityVoiceTimer=null;
+let pointTimer=null;
+let activeLive=null;
+let liveMessages=[];
+let reelObserver=null;let currentCommunityId=null;let currentCommentTarget=null;
+let serverOnline=false;
+let syncTimer=null;
+let eventSource=null;
+
+function blankProfile(){return {name:'',bio:'',pronouns:'',avatarId:'',coverId:'',links:[],followers:0,verified:false,createdAt:Date.now()}}
+function ownerDefaultProfile(){return {name:'Creador',bio:'',pronouns:'',avatarId:'',coverId:'',links:[],followers:0,verified:true,createdAt:Date.now()}}
+const DEMO_FEED_POSTS=[
+{id:'demo-feed-1',usuario:'@juan_dev',avatar:'https://i.pravatar.cc/120?img=12',contenido:'Estoy terminando una nueva interfaz para mi proyecto. ¿Qué función les gustaría ver primero?',title:'Nuevo proyecto en camino',likes:128,comments:24,createdAt:Date.now()-2*60*60*1000},
+{id:'demo-feed-2',usuario:'@maria_art',avatar:'https://i.pravatar.cc/120?img=32',contenido:'Hoy terminé una ilustración después de varias horas de trabajo. Comparto el resultado con la comunidad.',title:'Proceso creativo de hoy',likes:87,comments:13,createdAt:Date.now()-5*60*60*1000},
+{id:'demo-feed-3',usuario:'@pixel_cocina',avatar:'https://i.pravatar.cc/120?img=47',contenido:'Probando una receta nueva para la comunidad. La próxima publicación tendrá el paso a paso completo.',title:'Probando algo nuevo',likes:64,comments:8,createdAt:Date.now()-24*60*60*1000}
+];
+function seedDemoPosts(st){if(Array.isArray(st.posts)&&st.posts.length)return st;st.posts=DEMO_FEED_POSTS.map(p=>({id:p.id,author:p.usuario.replace(/^@/,''),usuario:p.usuario,avatar:p.avatar,contenido:p.contenido,title:p.title,caption:p.contenido,likes:p.likes,comments:p.comments,liked:false,createdAt:p.createdAt,mediaId:'',type:'text',link:'',isDemo:true}));return st}
+function defaultState(){return {profile:blankProfile(),posts:[],communities:[],notifications:[],comments:{},bookmarks:[],reputation:{},subscriptions:{},following:[],blockedUsers:[],reports:[],gems:0,updatedAt:0,revision:0}}
+function isOwner(){return localStorage.getItem(ROLE_KEY)==='owner'}
+function loadState(){try{const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'null');
+  if(saved){
+    if(!localStorage.getItem(ROLE_KEY)){
+      const oldProfile=saved.profile||{};
+      const looksLikeCreator=oldProfile.verified===true || oldProfile.name==='Creador';
+      if(looksLikeCreator){localStorage.setItem(ROLE_KEY,'owner');localStorage.setItem(OWNER_KEY,JSON.stringify(oldProfile))}
+      else localStorage.setItem(ROLE_KEY,'visitor');
+    }
+    const normalized=seedDemoPosts(normalizeState(saved));
+    if(isOwner()) normalized.profile={...ownerDefaultProfile(),...(JSON.parse(localStorage.getItem(OWNER_KEY)||'{}')),verified:true};
+    else normalized.profile=normalizeVisitorProfile(normalized.profile);
+    return normalized;
+  }
+}catch(e){}
+localStorage.setItem(ROLE_KEY,'visitor');return seedDemoPosts(defaultState())}
+function normalizeVisitorProfile(p){return {name:String(p?.name||''),bio:String(p?.bio||''),pronouns:String(p?.pronouns||''),avatarId:String(p?.avatarId||''),coverId:String(p?.coverId||''),links:Array.isArray(p?.links)?p.links:[],followers:Number(p?.followers)||0,verified:false}}
+function normalizeState(x){const d=defaultState();return {profile:{...d.profile,...(x.profile||{}),links:Array.isArray(x.profile?.links)?x.profile.links:[]},posts:Array.isArray(x.posts)?x.posts:[],communities:Array.isArray(x.communities)?x.communities:[],notifications:Array.isArray(x.notifications)?x.notifications:[],comments:(x.comments&&typeof x.comments==='object')?x.comments:{},bookmarks:Array.isArray(x.bookmarks)?x.bookmarks:[],reputation:(x.reputation&&typeof x.reputation==='object')?x.reputation:{},subscriptions:(x.subscriptions&&typeof x.subscriptions==='object')?x.subscriptions:{},following:Array.isArray(x.following)?x.following:[],blockedUsers:Array.isArray(x.blockedUsers)?x.blockedUsers:[],reports:Array.isArray(x.reports)?x.reports:[],gems:Number(x.gems)||0,updatedAt:Number(x.updatedAt)||0,revision:Number(x.revision)||0}}
+function saveState(){state.updatedAt=Date.now();if(isOwner()){state.profile.verified=true;localStorage.setItem(OWNER_KEY,JSON.stringify(state.profile))}else state.profile.verified=false;localStorage.setItem(STATE_KEY,JSON.stringify(state))}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function uid(){return crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2)}
+function timeAgo(t){const s=Math.max(0,Date.now()-Number(t||0))/1000;if(s<60)return 'ahora';if(s<3600)return Math.floor(s/60)+' min';if(s<86400)return Math.floor(s/3600)+' h';return Math.floor(s/86400)+' d'}
+function safeUrl(v){try{const u=new URL(v);return ['http:','https:'].includes(u.protocol)?u.href:''}catch(e){return ''}}
+function host(v){try{return new URL(v).hostname.replace(/^www\./,'')}catch(e){return v}}
+function linkCard(url){const u=safeUrl(url);return u?`<a class="link-card" href="${esc(u)}" target="_blank" rel="noopener noreferrer"><strong>🔗 Enlace</strong><span>${esc(host(u))} · ${esc(u)}</span></a>`:''}
+function avatarStyle(id){return id?'background-image:url('+JSON.stringify('/api/media/'+encodeURIComponent(id))+')':''}
+
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>r.result.createObjectStore(DB_STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function putMedia(blob){const db=await openDB();return new Promise((resolve,reject)=>{const id=uid(),tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(blob,id);tx.oncomplete=()=>resolve(id);tx.onerror=()=>reject(tx.error)})}
+async function getMedia(id){if(!id)return '';try{const db=await openDB();return await new Promise((resolve,reject)=>{const r=db.transaction(DB_STORE,'readonly').objectStore(DB_STORE).get(id);r.onsuccess=()=>resolve(r.result||'');r.onerror=()=>reject(r.error)})}catch(e){return ''}}
+async function cacheServerMedia(id){if(!id)return '';const existing=await getMedia(id);if(existing)return existing;const r=await fetch('/api/media/'+encodeURIComponent(id),{cache:'force-cache'});if(!r.ok)return '';const b=await r.blob();try{const db=await openDB();const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(b,id)}catch(e){}return b}
+async function uploadMedia(id,blob){if(!id||!blob)return;const r=await fetch('/api/media/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':blob.type||'application/octet-stream','X-Client-Id':clientId},body:blob});if(!r.ok)throw new Error('media upload failed')}
+
+function setStatus(text,error=false){$('statusbar').innerHTML=serverOnline?`<span class="server-dot"></span> ${esc(text)}`:esc(text);$('statusbar').style.color=error?'#ff9a9a':'#bdbdc6'}
+function toast(text){const t=$('toast');t.textContent=text;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2200)}
+function page(id,btn){document.body.classList.toggle('reels-mode',id==='reels');['feed','reels','live','community','profile'].forEach(x=>$(x).classList.toggle('hidden',x!==id));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='reels')setupReels();if(id==='live')renderLive();if(id==='feed')renderHybridFeed();if(id==='community')renderCommunities();if(id==='profile')renderProfile();window.scrollTo({top:0,behavior:'smooth'})}
+function openCreateChooser(){$('createChooser').classList.remove('hidden')}
+function closeCreateChooser(){$('createChooser').classList.add('hidden')}
+function openCreate(mode='post'){createMode=mode;$('createTitle').textContent=mode==='reel'?'Nuevo Reel':'Nueva publicación';$('media').accept=mode==='reel'?'video/*':'image/*,video/*';const sel=$('postCommunity');if(sel){sel.innerHTML='<option value="">Sin publicar en un foro</option>'+state.communities.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');sel.classList.toggle('hidden',mode!=='reel');$('postAsTutorial').parentElement?.classList.toggle('hidden',mode!=='reel')}$('createBox').classList.remove('hidden');setTimeout(()=>$('caption').focus(),50)}
+function closeCreate(){$('createBox').classList.add('hidden')}
+function openCommunityCreate(){$('communityCreateBox').classList.remove('hidden');setTimeout(()=>$('communityName').focus(),50)}
+function closeCommunityCreate(){$('communityCreateBox').classList.add('hidden')}
+function closeLiveCreate(){$('liveCreateBox').classList.add('hidden')}
+
+// Conexión segura: la app funciona aunque el servidor no esté disponible.
+async function api(path,opts={}){
+  const headers={'X-Client-Id':clientId,...(opts.headers||{})};
+  if(opts.body && !(opts.body instanceof Blob) && !headers['Content-Type']) headers['Content-Type']='application/json';
+  const r=await fetch(API_BASE+path,{...opts,headers});
+  if(!r.ok)throw new Error(await r.text()||('HTTP '+r.status));
+  const type=r.headers.get('content-type')||'';
+  if(r.status===204||!type.includes('application/json'))return null;
+  return r.json();
+}
+async function syncFromServer(){
+  try{
+    const remote=await api('/api/state?clientId='+encodeURIComponent(clientId));
+    if(remote&&typeof remote==='object'){
+      const localProfile=state.profile;
+      const localBookmarks=state.bookmarks||[];
+      const localComments=state.comments||{};
+      const local=state, merged=normalizeState(remote);
+      const posts=new Map([...(merged.posts||[]),...(local.posts||[])].map(x=>[String(x.id),x]));
+      merged.posts=[...posts.values()].sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0));
+      const communities=new Map([...(merged.communities||[]),...(local.communities||[])].map(x=>[String(x.id),x]));
+      merged.communities=[...communities.values()];
+      merged.profile=isOwner()?{...ownerDefaultProfile(),...localProfile,verified:true}:normalizeVisitorProfile(localProfile);
+      merged.bookmarks=localBookmarks;
+      merged.comments={...merged.comments,...localComments};
+      state=merged;saveState();
+    }
+    serverOnline=true;setStatus('Conectado · tus datos están guardados y se sincronizan sin recargar');renderAll();return true
+  }catch(e){serverOnline=false;setStatus('Modo local · se sincronizará cuando vuelva el servidor',true);return false}
+}
+function startRealtimeSync(){
+  if(eventSource)try{eventSource.close()}catch(e){}
+  if(!('EventSource' in window))return;
+  try{
+    eventSource=new EventSource('/api/events?clientId='+encodeURIComponent(clientId));
+    eventSource.onopen=()=>{serverOnline=true;setStatus('Conectado · los cambios se sincronizan sin recargar')};
+    eventSource.onmessage=async e=>{try{const msg=JSON.parse(e.data);if(msg.type==='state-changed')await syncFromServer()}catch(_){}};
+    eventSource.onerror=()=>{serverOnline=false};
+  }catch(e){}
+}
+function scheduleSync(){clearTimeout(syncTimer);syncTimer=setTimeout(syncToServer,400)}
+async function syncToServer(){
+  try{
+    const localProfile=state.profile, localBookmarks=state.bookmarks||[], localComments=state.comments||{};
+    const remote=await api('/api/state',{method:'POST',body:JSON.stringify({clientId,state})});
+    if(remote&&typeof remote==='object'){state=normalizeState(remote);state.profile=isOwner()?{...ownerDefaultProfile(),...localProfile,verified:true}:normalizeVisitorProfile(localProfile);state.bookmarks=localBookmarks;state.comments={...state.comments,...localComments}}
+    saveState();serverOnline=true;setStatus('Guardado · no necesitas recargar la app');
+  }catch(e){serverOnline=false;saveState();setStatus('Guardado en este teléfono · se sincronizará al volver el servidor',true)}
+}
+
+async function publish(){
+  if(!state.profile.name.trim()){toast('Primero crea tu perfil con un nombre.');page('profile',document.querySelectorAll('nav button')[5]);return}
+  const file=$('media').files[0],title=$('postTitle').value.trim(),caption=$('caption').value.trim(),rawLink=$('postLink').value.trim(),link=safeUrl(rawLink);const communityId=$('postCommunity')?.value||'';const asTutorial=!!$('postAsTutorial')?.checked;
+  if(createMode==='reel'&&(!file||!file.type.startsWith('video/'))){toast('Un Reel necesita un video.');return}
+  if(!file&&!title&&!caption&&!link){toast('Añade un título, escribe algo, añade un enlace o selecciona un archivo.');return}
+  if(file){const max=file.type?.startsWith('video/')?6*1024*1024:4*1024*1024;if(file.size>max){toast(file.type?.startsWith('video/')?'El video supera el límite de 6 MB.':'El archivo supera el límite de 4 MB.');return}}
+  let mediaId='';
+  try{
+    if(file)mediaId=await putMedia(file);
+    const p={id:uid(),author:state.profile.name||'Creador',title,caption,link,mediaId,type:file?.type?.startsWith('video/')?'video':'image',likes:0,liked:false,createdAt:Date.now(),avatarId:state.profile.avatarId||'',communityId:asTutorial?communityId:'',isTutorial:asTutorial&&!!communityId};
+    state.posts.unshift(p);saveState();
+    // La publicación se guarda primero en local para que el botón funcione incluso
+    // al abrir el HTML directamente en el navegador sin servidor.
+    $('postTitle').value='';$('caption').value='';$('postLink').value='';$('media').value='';if($('postCommunity'))$('postCommunity').value='';if($('postAsTutorial'))$('postAsTutorial').checked=false;closeCreate();renderAll();
+    toast('Publicación guardada localmente');
+    // Si existe servidor, intenta sincronizar sin bloquear la publicación local.
+    try{if(file&&serverOnline)await uploadMedia(mediaId,file);if(serverOnline)await syncToServer()}catch(syncError){console.warn('Sincronización omitida:',syncError)}
+    if(serverOnline)toast('Publicación guardada y sincronizada');
+  }catch(e){console.error(e);toast('No se pudo crear la publicación. Intenta de nuevo.')}}
+async function renderPosts(){
+  const box=$('posts');if(!state.posts.length){box.innerHTML='<div class="empty"><div class="emoji">✨</div><strong>Aún no hay publicaciones</strong>Usa el botón “+ Publicar” para crear la primera.</div>';return}
+  box.innerHTML='';
+  for(const p of state.posts){
+    const el=document.createElement('article');el.className='post-card'+(p.isDemo?' demo-post':'');
+    let media=p.mediaId?await getMedia(p.mediaId):'';if(!media&&p.mediaId)media=await cacheServerMedia(p.mediaId);
+    let avatarBlob=p.avatarId?await getMedia(p.avatarId):'';
+    if(!avatarBlob&&p.author===state.profile.name&&state.profile.avatarId)avatarBlob=await getMedia(state.profile.avatarId);
+    const avatarUrl=avatarBlob?URL.createObjectURL(avatarBlob):(p.avatar||'');
+    const mediaHtml=media?(p.type==='video'?`<video class="post-media" src="${URL.createObjectURL(media)}" controls playsinline preload="metadata"></video>`:`<img class="post-media" src="${URL.createObjectURL(media)}" alt="Publicación" loading="lazy">`):'';
+    const saved=state.bookmarks?.includes(p.id);
+    el.innerHTML=`<div class="post-head"><div class="avatar" id="av-${p.id}" style="${avatarUrl?`background-image:url(${JSON.stringify(avatarUrl)})`:''}"></div><div><div class="post-author-line"><span class="post-username">@${esc(p.author||'usuario')}</span>${state.profile.verified&&p.author===state.profile.name?'<span class="verified-dot">✓</span>':''}</div><div class="post-time">${timeAgo(p.createdAt)}</div></div></div>${p.isDemo?'<span class="post-demo-badge">Publicación de ejemplo</span>':''}${p.title?`<h3 class="post-title">${esc(p.title)}</h3>`:''}${p.caption?`<div class="post-caption">${esc(p.caption)}</div>`:''}${p.isTutorial?`<div class="tag tutorial-tag">Tutorial de foro</div>`:''}${p.link?linkCard(p.link):''}${mediaHtml}<div class="post-actions"><button class="${p.liked?'liked':''}" onclick="likePost('${p.id}')" aria-label="Me gusta"><svg class="post-action-icon" viewBox="0 0 24 24"><path d="M20.8 8.6c0 5.1-8.8 10.4-8.8 10.4S3.2 13.7 3.2 8.6A4.6 4.6 0 0 1 12 6.4a4.6 4.6 0 0 1 8.8 2.2Z"/></svg><span>${Number(p.likes)||0}</span></button><button onclick="openComments('${p.id}')" aria-label="Comentar"><svg class="post-action-icon" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.8 7.5 8.5 8.5 0 0 1-3.7-.8L4 20l1.8-3.3A7.2 7.2 0 0 1 4.5 12 7.5 7.5 0 0 1 12 4.5a7.5 7.5 0 0 1 8 7Z"/></svg><span>${countComments(p.id)}</span></button><button onclick="sharePost('${p.id}')" aria-label="Compartir"><svg class="post-action-icon" viewBox="0 0 24 24"><path d="m13 5 7 7-7 7"/><path d="M20 12H5"/></svg><span>Compartir</span></button><button class="${saved?'liked':''}" onclick="toggleBookmark('${p.id}',this)" aria-label="Guardar"><svg class="post-action-icon" viewBox="0 0 24 24"><path d="M6 4.5A2.5 2.5 0 0 1 8.5 2h7A2.5 2.5 0 0 1 18 4.5V21l-6-3.5L6 21Z"/></svg><span>${saved?'Guardado':'Guardar'}</span></button></div>`;
+    box.appendChild(el)
+  }
+}
+
+async function likePost(id){const p=state.posts.find(x=>x.id===id);if(!p)return;p.liked=!p.liked;p.likes=Math.max(0,(Number(p.likes)||0)+(p.liked?1:-1));saveState();renderPosts();try{await api('/api/posts/'+encodeURIComponent(id)+'/like',{method:'POST',body:JSON.stringify({liked:p.liked})})}catch(e){}scheduleSync();toast(p.liked?'Me gusta añadido':'Me gusta quitado')}
+async function sharePost(id){const url=location.origin+location.pathname+'#post-'+id;try{if(navigator.share)await navigator.share({title:'IVRSC',text:'Mira esta publicación en IVRSC',url});else{await navigator.clipboard.writeText(url);toast('Enlace copiado')}}catch(e){if(e.name!=='AbortError')toast('No se pudo compartir')}}
+async function setupReels(){
+  const box=$('reelPosts');const reels=state.posts.filter(p=>p.type==='video');
+  if(!reels.length){box.innerHTML='<article class="reel-empty-card"><div class="reel-empty-visual"><div class="reel-empty-play">▶</div></div><div class="reel-empty-info"><strong>Aún no hay Reels</strong><span>Los videos que publiques aparecerán aquí en formato vertical, con likes, comentarios y reproducción automática.</span><button class="primary" onclick="openCreate(\'reel\')">＋ Crear mi primer Reel</button></div></article>';return}
+  box.innerHTML='';
+  for(const p of reels){
+    const media=await getMedia(p.mediaId);const url=media?URL.createObjectURL(media):'';const saved=state.bookmarks?.includes(p.id);const commentCount=countComments(p.id);
+    let avatarBlob=p.avatarId?await getMedia(p.avatarId):'';if(!avatarBlob&&p.author===state.profile.name&&state.profile.avatarId)avatarBlob=await getMedia(state.profile.avatarId);const avatarUrl=avatarBlob?URL.createObjectURL(avatarBlob):(p.avatar||'');
+    const card=document.createElement('article');card.className='reel-card';card.dataset.id=p.id;
+    card.innerHTML=`<video src="${url}" playsinline muted loop preload="metadata"></video><button class="reel-sound-btn" onclick="toggleReelAudio(this)" aria-label="Activar sonido" aria-pressed="false"><svg viewBox="0 0 24 24" class="sound-icon"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="M18.5 7a7.5 7.5 0 0 1 0 10"/></svg></button><button class="reel-share-float" onclick="sharePost('${p.id}')" aria-label="Compartir Reel"><svg viewBox="0 0 24 24"><path d="m13 5 7 7-7 7"/><path d="M20 12H5"/></svg></button><div class="reel-overlay"></div><div class="reel-description"><div class="reel-creator"><div class="reel-creator-photo" style="${avatarUrl?`background-image:url(${JSON.stringify(avatarUrl)})`:''}"></div><div><div class="reel-author">@${esc(p.author||'usuario')} ${p.author===state.profile.name?'<span class="verified-dot">✓</span>':''}</div>${p.title?`<div class="reel-title">${esc(p.title)}</div>`:''}<div class="reel-caption">${esc(p.caption||'')}</div></div></div></div><div class="reel-actions"><button class="reel-action ${p.liked?'liked':''}" onclick="likeReel('${p.id}',this)" aria-label="Me gusta"><svg class="action-icon" viewBox="0 0 24 24"><path d="M20.8 8.6c0 5.1-8.8 10.4-8.8 10.4S3.2 13.7 3.2 8.6A4.6 4.6 0 0 1 12 6.4a4.6 4.6 0 0 1 8.8 2.2Z"/></svg><small>${Number(p.likes)||0}</small></button><button class="reel-action" onclick="openComments('${p.id}')" aria-label="Comentarios"><svg class="action-icon" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.8 7.5 8.5 8.5 0 0 1-3.7-.8L4 20l1.8-3.3A7.2 7.2 0 0 1 4.5 12 7.5 7.5 0 0 1 12 4.5a7.5 7.5 0 0 1 8 7Z"/></svg><small>${commentCount}</small></button><button class="reel-action" onclick="sharePost('${p.id}')" aria-label="Compartir"><svg class="action-icon" viewBox="0 0 24 24"><path d="m13 5 7 7-7 7"/><path d="M20 12H5"/></svg><small>Compartir</small></button><button class="reel-action ${saved?'liked':''}" onclick="toggleBookmark('${p.id}',this)" aria-label="Guardar"><svg class="action-icon" viewBox="0 0 24 24"><path d="M6 4.5A2.5 2.5 0 0 1 8.5 2h7A2.5 2.5 0 0 1 18 4.5V21l-6-3.5L6 21Z"/></svg><small>Guardar</small></button></div><div class="reel-audio">${esc(p.audioName||('Audio original · '+p.author))}</div><div class="reel-progress"><span></span></div>`;
+    box.appendChild(card);
+    const video=card.querySelector('video'),progress=card.querySelector('.reel-progress span');
+    video.addEventListener('timeupdate',()=>{const pct=video.duration?Math.min(100,(video.currentTime/video.duration)*100):0;card.style.setProperty('--progress',pct+'%');progress.style.width=pct+'%'});
+    video.addEventListener('loadedmetadata',()=>{progress.style.width='0%'});
+  }
+  if(reelObserver)reelObserver.disconnect();reelObserver=new IntersectionObserver(entries=>entries.forEach(e=>{const v=e.target.querySelector('video');if(e.isIntersecting&&e.intersectionRatio>.7){document.querySelectorAll('.reel-card video').forEach(x=>{if(x!==v)x.pause()});v.play().catch(()=>{})}else v.pause()}),{root:box,threshold:[.7]});document.querySelectorAll('.reel-card').forEach(c=>reelObserver.observe(c))
+}
+
+function toggleReelAudio(btn){
+  const card=btn?.closest('.reel-card');const video=card?.querySelector('video');if(!video)return;
+  video.muted=!video.muted;
+  btn.classList.toggle('unmuted',!video.muted);
+  btn.setAttribute('aria-pressed',String(!video.muted));
+  btn.setAttribute('aria-label',video.muted?'Activar sonido':'Silenciar video');
+  btn.innerHTML=video.muted?'<svg viewBox="0 0 24 24" class="sound-icon"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="m17 9 4 6"/><path d="m21 9-4 6"/></svg>':'<svg viewBox="0 0 24 24" class="sound-icon"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="M18.5 7a7.5 7.5 0 0 1 0 10"/></svg>';
+  if(!video.muted)video.play().catch(()=>{});
+}
+
+function likeReel(id,btn){likePost(id);btn.classList.toggle('liked');const heart=document.createElement('div');heart.className='floating-heart';heart.textContent='♥';btn.closest('.reel-card').appendChild(heart);setTimeout(()=>heart.remove(),900);setTimeout(setupReels,30)}
+
+function renderCategories(){const row=$('categoryRow');row.innerHTML=CATEGORIES.map(c=>`<button class="${c===activeCategory?'active':''}" onclick="setCategory('${esc(c)}')">${esc(c)}</button>`).join('')}
+function setCategory(c){activeCategory=c;renderCommunities()}
+function getKarma(name){return Math.max(0,Number(state.reputation?.[name]||0))}
+function addKarma(name,delta){if(!name)return;state.reputation=state.reputation||{};state.reputation[name]=Math.max(0,getKarma(name)+Number(delta||0));saveState()}
+function renderRoleBadges(user,community){const roles=(community.roles||[]).filter(r=>r.user===user);return roles.map(r=>{const n=(r.name||'').toLowerCase();const cls=n.includes('fundador')||n.includes('creador')?'role-creator':n.includes('moder')?'role-mod':n.includes('vip')?'role-vip':'role-custom';return `<span class="role-badge ${cls}">${esc(r.badge||'🏷️')} ${esc(r.name)}</span>`}).join(' ')}
+function openRoleManager(){const c=state.communities.find(x=>x.id===currentCommunityId);const box=$('communityRoleManager');if(!c||!box)return;box.classList.remove('hidden');const owner=c.owner===state.profile.name||isOwner();if(!owner){box.innerHTML='<div class="verified-only-note">🔒 Solo el creador del foro puede otorgar roles.</div>';return}const members=(c.membersList||[c.owner]).filter(Boolean);box.innerHTML=`<div class="role-manager-head"><b>🏷️ Roles autogestionados</b><small>${(c.roles||[]).length} asignados</small></div><div class="role-form"><select id="roleUser">${members.map(u=>`<option>${esc(u)}</option>`).join('')}</select><input id="roleName" maxlength="30" placeholder="Experto en Videojuegos"><input id="roleBadge" maxlength="4" value="🏷️" placeholder="🏷️"><button class="primary" onclick="grantCommunityRole()">Otorgar</button></div><div class="role-list">${(c.roles||[]).map((r,i)=>`<div><span class="role-badge">${esc(r.badge||'🏷️')} ${esc(r.name)}</span> <small>· ${esc(r.user)}</small><button class="secondary" onclick="removeCommunityRole(${i})">Quitar</button></div>`).join('')||'<span class="muted">Aún no hay roles.</span>'}</div>`}
+function grantCommunityRole(){const c=state.communities.find(x=>x.id===currentCommunityId);if(!c)return;const user=$('roleUser')?.value,name=$('roleName')?.value.trim(),badge=$('roleBadge')?.value.trim()||'🏷️';if(!user||!name){toast('Completa usuario y nombre del rol.');return}c.roles=Array.isArray(c.roles)?c.roles:[];c.roles.push({name,user,badge});addKarma(user,1);saveState();openRoleManager();renderCommunityThreads();toast('🏷️ Rol otorgado')}
+function removeCommunityRole(i){const c=state.communities.find(x=>x.id===currentCommunityId);if(!c)return;c.roles.splice(i,1);saveState();openRoleManager();renderCommunityThreads()}
+function renderHybridFeed(){const box=$('hybridFeed');if(!box)return;const cards=[];if(activeLive)cards.push(`<div class="hybrid-card live-hybrid"><div><span class="live-dot"></span><b>${esc(activeLive.author)}</b> está en Live</div><button class="primary" onclick="page('live',document.querySelectorAll('nav button')[3])">Ver ahora</button></div>`);const topC=state.communities.flatMap(c=>(c.threads||[]).map(t=>({...t,community:c}))).sort((a,b)=>(b.score||0)-(a.score||0))[0];if(topC)cards.push(`<div class="hybrid-card"><div><span class="tag">Foro destacado</span><b>${esc(topC.title)}</b><small>${esc(topC.community.name)} · ${topC.score||0} puntos</small></div><button class="secondary" onclick="openCommunityDetail('${topC.community.id}')">Ver foro</button></div>`);const reel=state.posts.find(p=>p.type==='video');if(reel)cards.push(`<div class="hybrid-card"><div><span class="tag">▶ Reel</span><b>${esc(reel.caption||'Nuevo Reel')}</b><small>${esc(reel.author)}</small></div><button class="secondary" onclick="page('reels',document.querySelectorAll('nav button')[1])">Ver Reels</button></div>`);box.innerHTML=cards.join('')}
+function renderCommunityTrends(){const box=$('communityTrends');if(!box)return;const q=($('communitySearch')?.value||'').trim().toLowerCase();const allThreads=state.communities.flatMap(c=>(c.threads||[]).map(t=>({...t,community:c})));const threads=(q?allThreads.filter(t=>[t.title,t.body,t.author,t.community.name,t.community.category,(t.tags||[]).join(' ')].join(' ').toLowerCase().includes(q)):allThreads).sort((a,b)=>(Number(b.score||0)-Number(a.score||0))||((Number(b.createdAt)||0)-(Number(a.createdAt)||0))).slice(0,4);const top=state.communities.slice().sort((a,b)=>Number(b.postsCount||0)-Number(a.postsCount||0)).slice(0,3);box.innerHTML=`<div class="trend-subtitle">Foros en tendencia</div>${top.length?top.map((c,i)=>`<div class="trend-item"><span>${i+1}. <b>${esc(c.name)}</b></span><span class="muted">${Number(c.postsCount)||0} temas</span></div>`).join(''):'<div class="muted" style="margin-top:7px;font-size:12px">Todavía no hay actividad.</div>'}<div class="trend-subtitle" style="margin-top:10px">${q?'Resultados de hilos':'Hilos recomendados'}</div>${threads.length?threads.map(t=>`<button class="trend-thread" onclick="openCommunityDetail('${t.community.id}')"><span><b>${esc(t.title)}</b><small>${esc(t.community.name)} · ${timeAgo(t.createdAt)}</small></span><strong>${Number(t.score)||0}</strong></button>`).join(''):'<div class="muted" style="font-size:12px;padding:7px 0">No hay hilos que coincidan con la búsqueda.</div>'}`}
+function countThreadsToday(c){const start=new Date();start.setHours(0,0,0,0);return (c.threads||[]).filter(t=>Number(t.createdAt||0)>=start.getTime()).length}
+function renderCommunities(){renderCategories();renderCommunityTrends();const box=$('communities');const q=($('communitySearch')?.value||'').trim().toLowerCase();let list=activeCategory==='Todos'?state.communities:state.communities.filter(c=>c.category===activeCategory);if(q)list=list.filter(c=>[c.name,c.category,c.description,(c.tags||[]).join(' '),(c.threads||[]).map(t=>[t.title,t.body,t.author,(t.tags||[]).join(' ')].join(' ')).join(' ')].join(' ').toLowerCase().includes(q));if(!list.length){box.innerHTML='<div class="empty"><div class="emoji">♧</div><strong>No hay comunidades que coincidan</strong>Prueba con otro foro, comunidad o etiqueta.</div>';return}box.innerHTML=list.map(c=>`<div class="community-card"><div class="community-title">${esc(c.name)}</div><div class="community-meta">${esc(c.category)} · ${Number(c.members)||1} miembro${Number(c.members)===1?'':'s'} · ${Number(c.postsCount)||0} temas</div><div class="community-activity"><span>${Math.max(1,Math.round((Number(c.members)||1)*0.18))} activos</span><span>${countThreadsToday(c)} nuevos hoy</span></div><p class="muted" style="font-size:13px;line-height:1.4">${esc(c.description||'Sin descripción.')}</p><div class="thread-tags">${(c.tags||[]).slice(0,8).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div><div class="community-actions"><span class="tag accent">Foro</span><button class="secondary" onclick="joinCommunity('${c.id}')">Unirse</button></div><button class="primary community-open" onclick="openCommunityDetail('${c.id}')">Entrar al foro →</button></div>`).join('')}
+function openCommunityDetail(id){const c=state.communities.find(x=>x.id===id);if(!c)return;currentCommunityId=id;$('communityDetailTitle').textContent=c.name;$('communityDetailMeta').textContent=`${c.category} · ${Number(c.members)||1} miembros · ${Number(c.postsCount)||0} temas`;$('communityDetailDescription').textContent=c.description||'Foro de la comunidad.';$('communityDetailTags').innerHTML=(c.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('');$('communityDetailBox').classList.remove('hidden');renderCommunityThreads()}
+function closeCommunityDetail(){$('communityDetailBox').classList.add('hidden');currentCommunityId=null}
+function joinCurrentCommunity(){if(currentCommunityId)joinCommunity(currentCommunityId)}
+function renderCommunityThreads(){const box=$('communityThreads');const list=state.communities.find(c=>c.id===currentCommunityId)?.threads||[];if(!list.length){box.innerHTML='<div class="empty community-empty-note"><strong>Aún no hay temas</strong>¡Sé el primero en publicar en este foro!</div>';return}box.innerHTML=list.slice().sort((a,b)=>Number(b.score||0)-Number(a.score||0)).map(t=>`<div class="thread"><div class="vote-box"><button onclick="voteThread('${t.id}',1)">▲</button><span class="score">${Number(t.score)||0}</span><button onclick="voteThread('${t.id}',-1)">▼</button></div><div><div class="thread-title">${esc(t.title)}</div><div class="community-meta">${esc(t.author)} ${renderRoleBadges(t.author,state.communities.find(c=>c.id===currentCommunityId)||{})} · ${timeAgo(t.createdAt)} · ⭐ ${getKarma(t.author)}</div><div class="thread-body">${renderMentions(t.body)}</div><div class="thread-tags">${(t.tags||[]).map(x=>`<span class="tag">#${esc(x)}</span>`).join('')}</div><div class="thread-footer"><button class="comment-btn" onclick="openComments('${t.id}','thread')">💬 ${countComments(t.id)} comentarios</button></div></div></div>`).join('')}
+function openCommunityThreadComposer(){$('communityThreadBox').classList.remove('hidden');setTimeout(()=>$('threadTitle').focus(),50)}
+function closeCommunityThreadComposer(){$('communityThreadBox').classList.add('hidden')}
+function createCommunityThread(){const c=state.communities.find(x=>x.id===currentCommunityId);if(!c)return;const title=$('threadTitle').value.trim(),body=$('threadBody').value.trim(),tags=$('threadTags').value.split(',').map(x=>x.trim().replace(/^#/,'')).filter(Boolean).slice(0,10);if(!title||!body){toast('Completa el título y el contenido.');return}c.threads=Array.isArray(c.threads)?c.threads:[];c.threads.unshift({id:uid(),title,body,tags,author:state.profile.name||'Creador',score:0,createdAt:Date.now()});addKarma(state.profile.name||'Creador',2);c.postsCount=(Number(c.postsCount)||0)+1;saveState();closeCommunityThreadComposer();renderCommunityThreads();renderCommunities();syncToServer();toast('Tema publicado')}
+function voteThread(id,delta){const c=state.communities.find(x=>x.id===currentCommunityId);const t=c?.threads?.find(x=>x.id===id);if(!t)return;t.score=(Number(t.score)||0)+delta;addKarma(t.author,delta>0?1:-1);saveState();renderCommunityThreads();renderProfile()}
+
+async function createCommunity(){const name=$('communityName').value.trim(),category=$('communityCategory').value,description=$('communityDescription').value.trim(),tags=$('communityTags').value.split(',').map(x=>x.trim().replace(/^#/,'')).filter(Boolean).slice(0,15);if(!name){toast('Ponle un nombre a la comunidad.');return}const c={id:uid(),name,category,description,tags,members:1,postsCount:0,threads:[],createdAt:Date.now(),owner:state.profile.name,roles:[{name:'Fundador',user:state.profile.name,badge:'👑'}],membersList:[state.profile.name],textChannels:[{id:'general',name:'general',topic:'Conversación general'},{id:'anuncios',name:'anuncios',topic:'Noticias y avisos'}],voiceRooms:[{id:'general-voz',name:'General',members:0},{id:'gaming-voz',name:'Gaming',members:0}],chatMessages:[],events:[]};state.communities.unshift(c);saveState();$('communityName').value='';$('communityDescription').value='';$('communityTags').value='';closeCommunityCreate();activeCategory=category;renderCommunities();openCommunityDetail(c.id);renderCommunityThreads();await syncToServer();toast('Comunidad creada y añadida al foro')}
+async function joinCommunity(id){const c=state.communities.find(x=>x.id===id);if(!c)return;c.membersList=Array.isArray(c.membersList)?c.membersList:[];const me=state.profile.name||'Usuario';const already=c.membersList.includes(me);if(!already){c.members=Math.max(1,(Number(c.members)||1)+1);c.membersList.push(me);saveState();renderCommunities();renderCommunityMembers();try{await api('/api/communities/'+encodeURIComponent(id)+'/join',{method:'POST',body:'{}'})}catch(e){}scheduleSync();toast('Te uniste a '+c.name)}else{toast('Ya perteneces a '+c.name)}}
+
+function renderMentions(text){return esc(text).replace(/(^|\s)@([a-zA-Z0-9_]{2,30})/g,'$1<span class="mention">@$2</span>')}
+function countComments(id){const p=state.posts.find(x=>String(x.id)===String(id));return Math.max(0,Number(p?.comments)||0)+(state.comments?.[id]||[]).length}
+function openComments(id,type='post'){currentCommentTarget={id,type};$('commentsBox').classList.remove('hidden');$('commentInput').value='';renderComments();setTimeout(()=>$('commentInput').focus(),50)}
+function closeComments(){$('commentsBox').classList.add('hidden');currentCommentTarget=null}
+function renderComments(){const list=state.comments?.[currentCommentTarget?.id]||[];const box=$('commentsList');if(!list.length){box.innerHTML='<div class="comment"><div class="comment-main"><div class="comment-avatar">A</div><div><b>Alex</b><div class="community-meta">hace 8 min</div><div class="comment-text">¡Buen Reel! 👏</div><div class="comment-actions"><button>Responder</button></div></div><span class="simulated-note">Ejemplo</span></div></div><div class="comment"><div class="comment-main"><div class="comment-avatar">M</div><div><b>Mar</b><div class="community-meta">hace 3 min</div><div class="comment-text">Me gustó mucho este contenido.</div><div class="comment-actions"><button>Responder</button></div></div><span class="simulated-note">Ejemplo</span></div></div>';return}box.innerHTML=list.map(c=>commentHtml(c)).join('')}
+function commentHtml(c){const replies=c.replies||[];return `<div class="comment"><div class="comment-main"><div class="comment-avatar" aria-hidden="true"></div><div><b>${esc(c.author)}</b><div class="community-meta">${timeAgo(c.createdAt)}</div><div class="comment-text">${renderMentions(c.text)}</div><div class="comment-actions"><button onclick="replyToComment('${c.id}')">Responder</button>${replies.length?`<button onclick="toggleReplies('${c.id}')">${c.collapsed?'Mostrar':'Ocultar'} ${replies.length} respuesta${replies.length===1?'':'s'}</button>`:''}</div></div></div>${replies.length?`<div class="reply-list ${c.collapsed?'collapsed':''}">${replies.map(r=>commentHtml(r)).join('')}</div>`:''}</div>`}
+function addComment(textOverride){const input=$('commentInput');const text=(textOverride||input?.value||'').trim();if(!text||!currentCommentTarget)return;state.comments=state.comments||{};state.comments[currentCommentTarget.id]=state.comments[currentCommentTarget.id]||[];state.comments[currentCommentTarget.id].push({id:uid(),author:state.profile.name||'Creador',text,createdAt:Date.now(),replies:[]});saveState();if(input)input.value='';renderComments();if(currentCommentTarget.type==='thread')renderCommunityThreads();else setupReels();renderPosts()}
+function replyToComment(id){const text=prompt('Escribe tu respuesta:');if(!text?.trim())return;const list=state.comments?.[currentCommentTarget.id]||[];const parent=findComment(list,id);if(parent){parent.replies=parent.replies||[];parent.replies.push({id:uid(),author:state.profile.name||'Creador',text:text.trim(),createdAt:Date.now(),replies:[]});parent.collapsed=false;saveState();renderComments()}}
+function findComment(list,id){for(const c of list){if(c.id===id)return c;const found=findComment(c.replies||[],id);if(found)return found}return null}
+function toggleReplies(id){const list=state.comments?.[currentCommentTarget.id]||[];const c=findComment(list,id);if(c){c.collapsed=!c.collapsed;saveState();renderComments()}}
+
+function saveWelcomeName(){const input=$('welcomeNameInput'),name=input?.value.trim();if(!name){toast('Escribe tu nombre primero.');input?.focus();return}state.profile.name=name;saveState();renderAll();updateAccountWelcome();toast('Nombre guardado en tu perfil')}
+function openProfileSetup(){page('profile',document.querySelectorAll('nav button')[5]);setTimeout(()=>{document.querySelector('#profile details')?.setAttribute('open','');$('profileName')?.focus()},80)}
+function dismissAccountWelcome(){localStorage.setItem('ivrsc_welcome_dismissed_v1','1');$('accountWelcome')?.classList.add('hidden')}
+function updateAccountWelcome(){const box=$('accountWelcome');if(!box)return;const needs=!state.profile.name;const dismissed=localStorage.getItem('ivrsc_welcome_dismissed_v1')==='1';box.classList.toggle('hidden',!needs||dismissed)}
+function isFollowing(name){return Array.isArray(state.following)&&state.following.includes(name)}
+async function toggleFollow(name){name=String(name||'').trim();if(!name||name===state.profile.name){toast('No puedes seguirte a ti mismo.');return}if(!state.profile.name){toast('Configura tu nombre para seguir cuentas.');openProfileSetup();return}state.following=Array.isArray(state.following)?state.following:[];const following=isFollowing(name);if(following)state.following=state.following.filter(x=>x!==name);else{state.following.push(name);addNotification('Ahora sigues a @'+name,'interactions')}saveState();updateFollowingUI(name);renderPosts();scheduleSync();toast(following?'Dejaste de seguir a @'+name:'Siguiendo a @'+name)}
+function updateFollowingUI(name){const b=$('followCreatorBtn');if(b){b.textContent=isFollowing(name)?'Siguiendo':'Seguir';b.classList.toggle('following',isFollowing(name))}}
+function reportUser(name){const reason=prompt('Motivo del reporte para @'+name+':','Contenido inapropiado');if(!reason)return;state.reports=Array.isArray(state.reports)?state.reports:[];state.reports.push({id:uid(),target:name,reason:reason.slice(0,300),createdAt:Date.now(),status:'pending'});saveState();scheduleSync();toast('Reporte enviado a moderación.')}
+function blockUser(name){if(!name||name===state.profile.name)return;state.blockedUsers=Array.isArray(state.blockedUsers)?state.blockedUsers:[];if(!state.blockedUsers.includes(name))state.blockedUsers.push(name);state.following=(state.following||[]).filter(x=>x!==name);saveState();closeCreatorProfile();renderPosts();scheduleSync();toast('@'+name+' fue ocultado de tu vista.')}
+function openGlobalSearch(){$('globalSearchBox').classList.remove('hidden');$('globalSearchInput').value='';renderGlobalSearch();setTimeout(()=>$('globalSearchInput').focus(),50)}
+function closeGlobalSearch(){$('globalSearchBox').classList.add('hidden')}
+function clearGlobalSearch(){const input=$('globalSearchInput');if(input){input.value='';renderGlobalSearch();input.focus()}}
+function renderGlobalSearch(){const q=($('globalSearchInput')?.value||'').trim().toLowerCase();const box=$('globalSearchResults');if(!box)return;if(!q){box.innerHTML='<div class="empty-search">Escribe algo para buscar en IVRSC.</div>';return}const results=[];const seen=new Set();const add=(kind,name,sub,action)=>{const key=kind+'|'+name;if(seen.has(key))return;seen.add(key);results.push({kind,name,sub,action})};const escJs=x=>String(x||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  filterBlockedPosts(state.posts).filter(p=>[p.title,p.caption,p.contenido,p.author,p.usuario].some(v=>String(v||'').toLowerCase().includes(q))).slice(0,12).forEach(p=>add('Publicación',p.title||'Sin título','@'+(p.author||'Usuario')+' · '+timeAgo(p.createdAt),`closeGlobalSearch();openCreatorProfile('${escJs(p.author)}')`));
+  state.communities.filter(c=>[c.name,c.category,c.description,...(c.tags||[])].some(v=>String(v||'').toLowerCase().includes(q))).slice(0,8).forEach(c=>add('Comunidad',c.name,(c.category||'Foro')+' · '+(c.members||0)+' miembros',`closeGlobalSearch();openCommunityDetail('${escJs(c.id)}')`));
+  const names=new Set(filterBlockedPosts(state.posts).map(p=>p.author).filter(Boolean));if(state.profile.name)names.add(state.profile.name);[...names].filter(n=>String(n).toLowerCase().includes(q)).slice(0,8).forEach(n=>add('Perfil','@'+n,isFollowing(n)?'Siguiendo':'Perfil público',`closeGlobalSearch();openCreatorProfile('${escJs(n)}')`));
+  box.innerHTML=results.length?results.map(r=>`<div class="search-result"><div class="search-result-main"><b>${esc(r.name)}</b><small>${esc(r.sub)}</small></div><span class="search-kind">${esc(r.kind)}</span><button class="secondary" onclick="${r.action}">Ver</button></div>`).join(''):'<div class="empty-search">No encontramos resultados. Prueba con otro nombre, tema o etiqueta.</div>'}
+function filterBlockedPosts(list){const blocked=new Set(state.blockedUsers||[]);return list.filter(p=>!blocked.has(p.author))}
+async function renderProfile(){const p=state.profile;updateAccountWelcome();p.createdAt=p.createdAt||Date.now();$('accountModeNote').textContent=isOwner()?'Cuenta del creador · guardada en este dispositivo.':'Cuenta personal · guardada en este dispositivo.';$('profileDisplayName').textContent=p.name||'Tu perfil';$('profilePronounsDisplay').textContent=p.pronouns?`Pronombres: ${p.pronouns}`:'';$('profileBioDisplay').textContent=p.bio||'Sin descripción todavía.';$('profilePostCount').textContent=state.posts.filter(x=>x.author===p.name).length;$('profileFollowerCount').textContent=p.followers||0;$('profileKarma').textContent=getKarma(p.name||'');$('profileBadge').classList.toggle('hidden',!p.verified);$('profileName').value=p.name||'';$('profilePronouns').value=p.pronouns||'';$('profileBio').value=p.bio||'';$('profileLinks').value=(p.links||[]).join(', ');$('profileAvatar').style.backgroundImage='';$('profileCover').style.backgroundImage='';if(p.avatarId){const b=await getMedia(p.avatarId);if(b)$('profileAvatar').style.backgroundImage=`url("${URL.createObjectURL(b)}")`;else $('profileAvatar').style.backgroundImage=`url("/api/media/${encodeURIComponent(p.avatarId)}")`}if(p.coverId){const b=await getMedia(p.coverId);if(b)$('profileCover').style.backgroundImage=`url("${URL.createObjectURL(b)}")`;else $('profileCover').style.backgroundImage=`url("/api/media/${encodeURIComponent(p.coverId)}")`}renderProfileAchievements(p);renderProfileMedia(p);renderProfileLive();renderProfileLinks(p)}
+function renderProfileAchievements(p){const box=$('profileAchievements');if(!box)return;const mine=state.posts.filter(x=>x.author===p.name),owned=state.communities.filter(c=>c.owner===p.name),member=state.communities.filter(c=>(c.membersList||[]).includes(p.name));const list=[];if(mine.length)list.push(['POST','Primer creador','Ya publicaste contenido']);if(p.verified)list.push(['VER','Creador verificado','Cuenta verificada']);if(getKarma(p.name)>=100)list.push(['K100','100 karma','Alcanzaste 100 de reputación']);if(owned.length)list.push(['FORO','Fundador','Creaste un foro']);if(member.length>=3)list.push(['COM','Comunidad','Perteneces a 3 o más foros']);if(!list.length)list.push(['NUEVO','Primeros pasos','Publica o participa para desbloquear emblemas']);box.innerHTML=list.map(a=>`<div class="achievement"><span class="achievement-mark">${a[0]}</span><div><b>${esc(a[1])}</b><small>${esc(a[2])}</small></div></div>`).join('')}
+let profileTab='posts';
+function setProfileTab(tab){profileTab=tab;document.querySelectorAll('.profile-tab').forEach(b=>b.classList.toggle('active',b.dataset.profileTab===tab));renderProfileMedia(state.profile)}
+async function renderProfileMedia(p){const box=$('profileGrid');if(profileTab==='communities'){const list=state.communities.filter(c=>(c.membersList||[]).includes(p.name)||c.owner===p.name);box.className='profile-community-list';box.innerHTML=list.length?list.map(c=>`<div class="profile-community-item"><b>${esc(c.name)}</b><small>${esc(c.category)} · ${Number(c.postsCount)||0} temas · ${Number(c.members)||1} miembros</small></div>`).join(''):'<div class="empty profile-empty"><strong>Aún no perteneces a comunidades</strong>Únete a un foro y aparecerá aquí.</div>';return}box.className='profile-grid';const mine=state.posts.filter(x=>x.author===p.name&&(profileTab==='reels'?x.type==='video':true));if(!mine.length){box.innerHTML=`<div class="empty profile-empty"><strong>${profileTab==='reels'?'Aún no hay Reels':'Aún no hay publicaciones'}</strong>${profileTab==='reels'?'Tus videos aparecerán aquí.':'Tu contenido aparecerá aquí.'}</div>`;return}box.innerHTML='';for(const x of mine){const cell=document.createElement('div');cell.className='profile-grid-item';const media=x.mediaId?await getMedia(x.mediaId):'';if(media){const url=URL.createObjectURL(media);cell.innerHTML=x.type==='video'?`<video src="${url}" muted></video><span class="media-type-badge">Reel</span>`:`<img src="${url}" alt=""><span class="media-type-badge">Foto</span>`}else{cell.classList.add('text');cell.textContent=x.caption||'Publicación'}box.appendChild(cell)}}
+
+function renderProfileLive(){const box=$('profileLiveBox');if(activeLive){box.innerHTML=`<div class="live-banner"><div><b><span class="live-dot"></span> ${esc(activeLive.title)}</b><div class="muted" style="font-size:12px;margin-top:4px">${esc(activeLive.category)} · Live activo en esta vista previa</div></div><button class="secondary" onclick="openLiveRoom()">Ver Live</button></div>`}else{box.innerHTML=`<div class="live-banner"><div><b><span class="nav-live-dot" style="display:inline-block;vertical-align:1px;margin-right:5px"></span>Live</b><div class="muted" style="font-size:12px;margin-top:4px">Crea una transmisión de prueba para revisar la experiencia.</div></div><button class="primary" onclick="openLiveCreate()">Crear Live</button></div>`}}
+async function saveProfile(){const old=state.profile.name;const links=$('profileLinks').value.split(',').map(s=>safeUrl(s.trim())).filter(Boolean).slice(0,10);const avatar=$('profileAvatarFile').files[0],cover=$('profileCoverFile').files[0];if(avatar&&avatar.size>4*1024*1024){toast('La foto supera 4 MB.');return}if(cover&&cover.size>4*1024*1024){toast('La portada supera 4 MB.');return}const name=$('profileName').value.trim().slice(0,60);if(!name){toast('Escribe un nombre para crear tu perfil.');return}try{state.profile.name=name;state.profile.createdAt=state.profile.createdAt||Date.now();state.profile.pronouns=$('profilePronouns').value.trim().slice(0,40);state.profile.bio=$('profileBio').value.trim().slice(0,1000);state.profile.links=links;state.profile.verified=isOwner();if(avatar){const id=uid();await putMediaWithId(id,avatar);state.profile.avatarId=id;try{await uploadMedia(id,avatar)}catch(e){}}if(cover){const id=uid();await putMediaWithId(id,cover);state.profile.coverId=id;try{await uploadMedia(id,cover)}catch(e){}}state.posts.forEach(p=>{if(p.author===old)p.author=name});saveState();await renderProfile();renderPosts();await syncToServer();$('profileAvatarFile').value='';$('profileCoverFile').value='';toast(isOwner()?'Cuenta guardada':'Perfil guardado en este dispositivo')}catch(e){toast('No se pudo guardar el perfil')}}
+async function putMediaWithId(id,blob){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(blob,id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+function renderProfileLinks(p){const box=$('profileLinksDisplay');if(!box)return;box.innerHTML=(p.links||[]).length?`<div class="profile-links">${p.links.map(u=>`<a class="profile-link" href="${esc(u)}" target="_blank" rel="noopener noreferrer">🔗 ${esc(host(u))}</a>`).join('')}</div>`:''}
+
+function loadCustomLiveEmotes(){try{return JSON.parse(localStorage.getItem('ivrsc_custom_emotes_v1')||'[]').filter(x=>x&&x.name&&x.src).slice(0,8)}catch(e){return []}}
+function saveCustomLiveEmotes(list){try{localStorage.setItem('ivrsc_custom_emotes_v1',JSON.stringify(list.slice(0,8)))}catch(e){toast('No hay suficiente espacio para guardar más emotes.')}}
+let customLiveEmotes=loadCustomLiveEmotes();
+function renderCustomEmoteManager(){
+  const box=$('customEmoteManager');if(!box)return;
+  if(!state.profile.verified){box.innerHTML='<div class="verified-only-note">🔒 Los emotes personalizados son una función para cuentas verificadas.</div>';return}
+  const chips=customLiveEmotes.map((e,i)=>`<span class="custom-emote-chip"><img src="${e.src}" alt="${esc(e.name)}"><b>:${esc(e.name)}:</b><button type="button" onclick="removeCustomLiveEmote(${i})">Eliminar</button></span>`).join('');
+  box.innerHTML=`<div class="custom-emote-head"><b>✨ Emotes personalizados</b><small class="muted">${customLiveEmotes.length}/8</small></div><p class="muted" style="font-size:12px;margin:5px 0 8px">Solo cuentas verificadas pueden subirlos. Máximo 300 KB por imagen.</p><div class="actions" style="margin:0"><input id="customEmoteName" maxlength="20" placeholder="Nombre, ej. hype"><input id="customEmoteFile" type="file" accept="image/png,image/jpeg,image/webp"></div><div class="actions"><button type="button" class="secondary" onclick="addCustomLiveEmote()">＋ Agregar emote</button></div><div class="custom-emote-list">${chips||'<span class="muted" style="font-size:12px">Todavía no tienes emotes personalizados.</span>'}</div>`;
+}
+function addCustomLiveEmote(){
+  if(!state.profile.verified){toast('Necesitas una cuenta verificada.');return}
+  if(customLiveEmotes.length>=8){toast('Máximo 8 emotes personalizados.');return}
+  const name=$('customEmoteName')?.value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,20);
+  const file=$('customEmoteFile')?.files?.[0];
+  if(!name||!file){toast('Pon un nombre y selecciona una imagen.');return}
+  if(file.size>300*1024){toast('El emote supera 300 KB.');return}
+  if(customLiveEmotes.some(e=>e.name===name)){toast('Ese nombre de emote ya existe.');return}
+  const reader=new FileReader();reader.onload=()=>{customLiveEmotes.push({name,src:String(reader.result)});saveCustomLiveEmotes(customLiveEmotes);renderCustomEmoteManager();toast('✨ Emote personalizado guardado')};reader.onerror=()=>toast('No se pudo leer el emote');reader.readAsDataURL(file);
+}
+function removeCustomLiveEmote(i){customLiveEmotes.splice(i,1);saveCustomLiveEmotes(customLiveEmotes);renderCustomEmoteManager();toast('Emote eliminado')}
+function openLiveCreate(){
+  $('liveTitle').value=activeLive?.title||'Mi Live en IVRSC';$('liveCategory').value=activeLive?.category||'Just Chatting';
+  $('liveEmotes').value=(activeLive?.emotes||['🔥','😂','❤️','GG']).filter(x=>typeof x==='string').join(', ');
+  $('liveInteractionType').value=activeLive?.interaction?.type||'none';$('liveQuestion').value=activeLive?.interaction?.question||'';$('livePollOptions').value=activeLive?.interaction?.options?.join(', ')||'';$('liveModerators').value=activeLive?.moderators?.join(', ')||'';
+  $('liveCreateBox').classList.remove('hidden');renderCustomEmoteManager()
+}
+async function startPreviewLive(){
+  const title=$('liveTitle').value.trim()||'Mi Live en IVRSC';const category=$('liveCategory').value;
+  const emotes=$('liveEmotes').value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,20);
+  const interactionType=$('liveInteractionType').value;const question=$('liveQuestion').value.trim();const options=$('livePollOptions').value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,6);const moderators=$('liveModerators').value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,20);
+  let cameraStream=null;
+  if(!navigator.mediaDevices?.getUserMedia){toast('Este navegador no permite acceder a la cámara desde esta página.');return}
+  try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true})}
+  catch(e){toast(e?.name==='NotAllowedError'?'Necesitas permitir cámara y micrófono para iniciar el Live.':'No se pudo activar la cámara y el micrófono.');return}
+  activeLive={id:uid(),title,category,emotes,customEmotes:customLiveEmotes.map(x=>({...x})),startedAt:Date.now(),author:state.profile.name||'Creador',viewers:Math.floor(850+Math.random()*1100),interaction:{type:interactionType,question,options,votes:{}},moderators,cameraStream};
+  state.notifications.unshift({id:uid(),type:'mentions',text:'🔴 Iniciaste un Live: '+title,createdAt:Date.now()});state.notifications=state.notifications.slice(0,50);saveState();closeLiveCreate();renderProfileLive();renderLive();updateNotifications();page('live',document.querySelectorAll('nav button')[3]);toast(state.profile.verified?'Live iniciado con cámara y tus emotes personalizados':'Live iniciado con cámara')
+}
+
+function updateViewerCount(){const el=$('liveViewerCount');if(el&&activeLive){const base=Math.max(1,Number(activeLive.viewers)||1245);const value=Math.max(1,base+Math.floor((Math.random()-.5)*18));activeLive.viewers=value;el.textContent=value.toLocaleString()}}
+function renderLive(){const box=$('liveDirectory');if(!activeLive){box.innerHTML='<div class="empty"><div class="emoji">🔴</div><strong>No hay Lives activos</strong>Ve a tu perfil para iniciar un Live de prueba.</div>';$('watchRoom').classList.add('hidden');return}box.innerHTML=`<div class="community-card"><div class="community-title"><span class="live-dot"></span> ${esc(activeLive.title)}</div><div class="community-meta">${esc(activeLive.author)} · ${esc(activeLive.category)} · ${Math.max(1,Math.floor((Date.now()-activeLive.startedAt)/60000)+1)} min</div><div class="actions"><button class="primary" onclick="openLiveRoom()">Ver Live</button><button class="danger" onclick="stopPreviewLive()">Terminar</button></div></div>`}
+function openLiveRoom(){const room=$('watchRoom');room.classList.remove('hidden');liveMessages=[];renderLiveRoom();room.scrollIntoView({behavior:'smooth',block:'start'});startPoints()}
+function renderLiveRoom(){
+  if(!activeLive){$('watchRoom').classList.add('hidden');return}
+  const room=$('watchRoom');const inter=activeLive.interaction||{type:'none',question:'',options:[],votes:{}};
+  const interactionHtml=inter.type==='question'&&inter.question?`<div class="live-question"><b>Pregunta del día</b><div style="margin-top:5px">${esc(inter.question)}</div></div>`:inter.type==='poll'&&inter.question?`<div class="live-question"><b>Encuesta</b><div style="margin-top:5px">${esc(inter.question)}</div><div class="poll-options">${(inter.options||[]).map((o,i)=>`<button class="poll-option" onclick="voteLive(${i})"><span>${esc(o)}</span><span id="pollCount${i}">${Number(inter.votes?.[i])||0}</span></button>`).join('')}</div></div>`:'';
+  const mods=(activeLive.moderators||[]).length?`<div class="moderator-list">${activeLive.moderators.map(m=>`<span class="moderator">${esc(m)} · Moderador</span>`).join('')}</div>`:'';
+  const custom=(activeLive.customEmotes||[]);const textEmotes=activeLive.emotes||[];const emoteButtons=[...textEmotes.map(e=>`<button type="button" class="live-emote-btn" onclick="useLiveEmote('${esc(e)}')">${esc(e)}</button>`),...custom.map(e=>`<button type="button" class="live-emote-btn" onclick="useLiveEmote(':${esc(e.name)}:')"><img src="${e.src}" alt="${esc(e.name)}"><span>:${esc(e.name)}:</span></button>`)].join('');
+  const viewers=Math.max(1,Number(activeLive.viewers)||1245);
+  room.innerHTML=`<div class="section-head"><div><h3><span class="live-dot live-title-dot"></span>${esc(activeLive.title)}</h3><p class="muted">${esc(activeLive.category)} · ${esc(activeLive.author)}</p>${mods}<div class="actions" style="margin-top:7px"><button class="secondary" onclick="openModeratorPanel()">Panel moderador</button></div></div><button class="secondary" onclick="closeLiveRoom()">Cerrar</button></div><div class="live-room"><div class="live-screen"><div class="live-metrics"><span class="live-viewers"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg><span id="liveViewerCount">${viewers.toLocaleString()}</span> viendo</span><div class="live-screen-actions"><button onclick="reportLive()">Reportar</button><button onclick="shareLive()">Compartir</button></div></div><video id="liveWebcam" class="live-webcam" autoplay playsinline muted></video><div class="live-placeholder"><div class="big"><span class="live-dot" style="width:18px;height:18px"></span></div><b>Cámara de Live activa</b><div style="font-size:12px;margin-top:5px">Vista previa local. El streaming público requiere el servidor/WebRTC.</div></div><div id="liveCameraStatus" class="live-camera-status">📹 Cámara · 🎙️ Micrófono activos</div><div id="liveChatPreview" class="live-chat-preview"></div></div>${interactionHtml}<div class="live-emote-row">${emoteButtons||'<span class="muted" style="font-size:12px">No hay emotes configurados.</span>'}</div><div id="liveChat" class="live-chat"></div><div class="points-bar"><span class="points"><span id="channelPoints">${points.toLocaleString()}</span> puntos</span><button class="secondary" onclick="toggleStore()">Tienda</button><button class="secondary" onclick="sendTipDemo()">Propina</button></div><div class="economy-note">Economía local de demostración · las gemas no representan dinero real.</div><div id="rewardStore" class="store hidden"><div class="reward"><div><b>Mensaje destacado</b><small>Destaca tu próximo mensaje.</small></div><button onclick="buyReward('highlight',100)">100 puntos</button></div><div class="reward"><div><b>Emote VIP</b><small>Desbloquea el emote VIP durante 30 minutos.</small></div><button onclick="buyReward('vip',500)">500 puntos</button></div></div><div class="actions" style="padding:10px;background:#111216"><input id="liveMsg" maxlength="180" placeholder="Escribe en el chat…" onkeydown="if(event.key==='Enter')sendLiveChat()"><button class="primary" onclick="sendLiveChat()">Enviar</button></div></div>`;
+  const webcam=$('liveWebcam');
+  if(webcam&&activeLive.cameraStream){webcam.srcObject=activeLive.cameraStream;webcam.play().catch(()=>{});$('watchRoom').querySelector('.live-screen')?.classList.add('camera-active')}
+  appendLiveChat('IVRSC','El chat está listo. Ganas 10 puntos por minuto en Live.');
+  appendLiveChat('Moderación','Mantén la conversación respetuosa.');
+  updateLivePreviewChat();
+}
+function updateLivePreviewChat(){const src=$('liveChat'),box=$('liveChatPreview');if(!src||!box)return;const rows=[...src.querySelectorAll('.chat-message')].slice(-3);box.innerHTML=rows.map(x=>x.outerHTML).join('')}
+function closeLiveRoom(){const video=$('liveWebcam');if(video)video.srcObject=null;$('watchRoom').classList.add('hidden');stopPoints()}
+let screenCaptureStream=null,screenRecorder=null,screenCaptureChunks=[];
+async function startScreenCapture(){
+  if(!navigator.mediaDevices?.getDisplayMedia){toast('Este navegador no admite captura de pantalla.');return}
+  try{
+    screenCaptureStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+    screenCaptureChunks=[];
+    const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported?.(x))||'';
+    screenRecorder=new MediaRecorder(screenCaptureStream,mime?{mimeType:mime}:undefined);
+    screenRecorder.ondataavailable=e=>{if(e.data?.size)screenCaptureChunks.push(e.data)};
+    screenRecorder.onstop=()=>{const blob=new Blob(screenCaptureChunks,{type:screenRecorder.mimeType||'video/webm'});const file=new File([blob],'ivrsc-screen-clip.webm',{type:blob.type});const input=$('clipFile');const dt=new DataTransfer();dt.items.add(file);input.files=dt.files;$('captureStatus').textContent='Captura lista. Puedes convertirla en Reel.';$('startScreenCaptureBtn').classList.remove('hidden');$('stopScreenCaptureBtn').classList.add('hidden');screenCaptureStream?.getTracks().forEach(t=>t.stop());screenCaptureStream=null;screenRecorder=null;};
+    screenCaptureStream.getVideoTracks()[0]?.addEventListener('ended',()=>{if(screenRecorder&&screenRecorder.state!=='inactive')screenRecorder.stop()});
+    screenRecorder.start(250);$('startScreenCaptureBtn').classList.add('hidden');$('stopScreenCaptureBtn').classList.remove('hidden');$('captureStatus').textContent='Grabando pantalla… pulsa Detener cuando tengas el fragmento.';
+  }catch(e){screenCaptureStream?.getTracks().forEach(t=>t.stop());screenCaptureStream=null;screenRecorder=null;if(e.name!=='AbortError')toast('No se pudo iniciar la captura de pantalla.');}
+}
+function stopScreenCapture(){if(screenRecorder&&screenRecorder.state!=='inactive')screenRecorder.stop();else screenCaptureStream?.getTracks().forEach(t=>t.stop())}
+
+function reportLive(){toast('Reporte enviado al equipo de moderación de esta vista previa.')}
+async function shareLive(){const url=location.href.split('#')[0]+'#live';try{if(navigator.share)await navigator.share({title:'Live en IVRSC',text:'Mira este Live en IVRSC',url});else{await navigator.clipboard.writeText(url);toast('Enlace del Live copiado')}}catch(e){if(e.name!=='AbortError')toast('No se pudo compartir el Live')}}
+
+function renderChatText(text){
+  let safe=esc(text);const emotes=activeLive?.customEmotes||[];for(const e of emotes){const token=':'+e.name+':';const escapedToken=esc(token);safe=safe.split(escapedToken).join(`<img class="chat-emote" src="${e.src}" alt=":${esc(e.name)}:">`)}return safe
+}
+function useLiveEmote(e){const input=$('liveMsg');if(!input)return;input.value+=(input.value?' ':'')+e;input.focus()}
+function sendLiveChat(){const input=$('liveMsg');if(!input)return;const text=input.value.trim();if(!text)return;appendLiveChat(state.profile.name||'Creador',text,highlightNext);highlightNext=false;input.value=''}
+function appendLiveChat(name,text,highlight=false){const box=$('liveChat');if(!box)return;const row=document.createElement('div');row.className='chat-message'+(highlight?' highlighted':'');row.innerHTML=`<span class="chat-author">${esc(name)}</span>${renderChatText(text)}`;box.appendChild(row);box.scrollTop=box.scrollHeight;updateLivePreviewChat()}
+function toggleStore(){$('rewardStore')?.classList.toggle('hidden')}
+function buyReward(type,cost){if(points<cost){toast('No tienes suficientes puntos.');return}points-=cost;localStorage.setItem('ivrsc_channel_points_v1',points);if(type==='highlight'){highlightNext=true;toast('✨ Tu próximo mensaje será destacado')}else{vipUntil=Date.now()+30*60*1000;localStorage.setItem('ivrsc_vip_until_v1',vipUntil);toast('👑 Emote VIP desbloqueado por 30 min')}updatePointsUI()}
+function sendTipDemo(){if(points<50){toast('Necesitas 50 puntos para esta propina demo.');return}points-=50;state.gems=(Number(state.gems)||0)+1;saveState();updatePointsUI();toast('💎 Propina demo enviada')}function openModeratorPanel(){if(!activeLive)return;const ok=(activeLive.moderators||[]).includes(state.profile.name)||isOwner();if(!ok){toast('Solo moderadores pueden usar este panel.');return}const q=prompt('Pregunta de la encuesta');if(!q)return;const opts=prompt('Opciones separadas por comas','Sí,No').split(',').map(x=>x.trim()).filter(Boolean).slice(0,6);activeLive.interaction={type:'poll',question:q,options:opts,votes:{}};renderLiveRoom();toast('📊 Encuesta lanzada')}function updatePointsUI(){const el=$('channelPoints');if(el)el.textContent=points.toLocaleString()}
+function startPoints(){if(pointTimer)return;pointTimer=setInterval(()=>{if(activeLive&&document.visibilityState==='visible'){points+=10;localStorage.setItem('ivrsc_channel_points_v1',points);updatePointsUI()}},60000)}
+function stopPoints(){if(pointTimer){clearInterval(pointTimer);pointTimer=null}}
+function stopPreviewLive(){const ended=activeLive;if(ended?.cameraStream)ended.cameraStream.getTracks().forEach(t=>t.stop());activeLive=null;stopPoints();saveState();$('watchRoom').classList.add('hidden');renderProfileLive();renderLive();renderHybridFeed();if(ended&&isOwner())openClipComposer(ended);toast('Live terminado')}
+
+function openClipComposer(live){window.lastEndedLive=live;$('clipBox')?.classList.remove('hidden');$('captureStatus')&&($('captureStatus').textContent='No hay una captura en curso.')}function closeClipComposer(){if(screenRecorder&&screenRecorder.state!=='inactive')screenRecorder.stop();screenCaptureStream?.getTracks().forEach(t=>t.stop());screenCaptureStream=null;screenRecorder=null;$('clipBox')?.classList.add('hidden')}async function createReelFromClip(){const file=$('clipFile')?.files?.[0];if(!file||!file.type.startsWith('video/')){toast('Selecciona un video grabado.');return}if(file.size>6*1024*1024){toast('El clip supera el límite de 6 MB.');return}try{const mediaId=await putMedia(file);state.posts.unshift({id:uid(),author:state.profile.name||'Creador',caption:'🎬 Clip de Live: '+(window.lastEndedLive?.title||'Live'),link:'',mediaId,type:'video',likes:0,liked:false,createdAt:Date.now(),fromLive:true});addKarma(state.profile.name||'Creador',3);saveState();closeClipComposer();renderAll();toast('🎬 Clip publicado en Reels')}catch(e){toast('No se pudo crear el Reel')}}
+function updateNotifications(){const n=state.notifications||[];$('notificationCount').textContent=n.length>99?'99+':n.length}
+function setNotificationTab(tab){notificationTab=tab;$('notifTabInteractions').classList.toggle('active',tab==='interactions');$('notifTabMentions').classList.toggle('active',tab==='mentions');showNotifications()}
+function showNotifications(){const box=$('notificationList');const n=(state.notifications||[]).filter(x=>notificationTab==='interactions'?(x.type||'interactions')==='interactions':x.type==='mentions');const demo=notificationTab==='interactions'?[{name:'Alex',initial:'A',text:'le dio Me gusta a tu publicación',type:'Me gusta',time:'hace 4 min'},{name:'Sofía',initial:'S',text:'empezó a seguirte',type:'Seguidor',time:'hace 18 min'},{name:'Diego',initial:'D',text:'compartió tu Reel',type:'Compartido',time:'hace 32 min'}]:[{name:'Mar',initial:'M',text:'te mencionó en una publicación',type:'Mención',time:'hace 6 min'},{name:'Leo',initial:'L',text:'te envió un mensaje',type:'Mensaje',time:'hace 21 min'}];const real=n.map(x=>({name:x.author||'IVRSC',initial:(x.author||'I').charAt(0).toUpperCase(),text:x.text||'Nueva actividad en tu cuenta',type:x.type==='mentions'?'Mención':'Actividad',time:new Date(x.createdAt).toLocaleString()}));const rows=[...real,...demo];box.innerHTML=rows.map(x=>`<div class="notification-card"><div class="notification-avatar">${esc(x.initial)}</div><div class="notification-main"><b>${esc(x.name)}</b><small>${esc(x.text)} · ${esc(x.time)}</small></div><span class="notification-type">${esc(x.type)}</span></div>`).join('');$('notificationsBox').classList.remove('hidden')}
+function closeNotifications(){$('notificationsBox').classList.add('hidden')}
+function openCreatorProfile(name){name=String(name||'').trim();const mine=name===state.profile.name;const verified=mine&&state.profile.verified;$('creatorTitle').textContent='@'+name;$('creatorInfo').innerHTML=mine?'<span class="tag accent">Tu perfil</span> '+(verified?'<span class="tag">✓ Verificado</span>':''):'Perfil público';$('creatorActions').innerHTML=mine?'<button class="primary" onclick="closeCreatorProfile();page(\'profile\',document.querySelectorAll(\'nav button\')[5])">Abrir mi perfil</button>':`<div class="profile-social-row"><button id="followCreatorBtn" class="follow-btn ${isFollowing(name)?'following':''}" onclick="toggleFollow('${name.replace(/'/g,"\'")}')">${isFollowing(name)?'Siguiendo':'Seguir'}</button><button onclick="reportUser('${name.replace(/'/g,"\'")}')">Reportar</button><button onclick="blockUser('${name.replace(/'/g,"\'")}')">Ocultar</button></div><div class="trust-note">Las acciones sensibles quedan registradas y se sincronizan con el servidor cuando está disponible.</div>`;$('creatorBox').classList.remove('hidden')}
+function closeCreatorProfile(){$('creatorBox').classList.add('hidden')}
+
+
+function toggleBookmark(id,btn){state.bookmarks=Array.isArray(state.bookmarks)?state.bookmarks:[];const i=state.bookmarks.indexOf(id);if(i>=0){state.bookmarks.splice(i,1);btn?.classList.remove('saved');toast('Quitado de guardados')}else{state.bookmarks.push(id);btn?.classList.add('saved');toast('🔖 Guardado en marcadores')}saveState();renderPosts()}
+function previewProfileFile(input,target,type){const file=input.files?.[0];if(!file)return;const url=URL.createObjectURL(file);target.style.backgroundImage=`url("${url}")`;let box=document.getElementById('profileDraftPreview');if(!box){box=document.createElement('div');box.id='profileDraftPreview';box.className='draft-preview';document.querySelector('#profile details')?.appendChild(box)}box.textContent=type==='avatar'?'Vista previa: nueva foto de perfil lista para guardar.':'Vista previa: nueva portada lista para guardar.'}
+function renderAll(){renderHybridFeed();renderPosts();setupReels();renderCommunities();renderProfile();renderLive();updateNotifications()}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')document.querySelectorAll('video').forEach(v=>v.pause())});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeCreateChooser();closeCreate();closeCommunityCreate();closeLiveCreate();closeNotifications();closeCreatorProfile()}});
+
+renderAll();
+$('profileAvatarFile')?.addEventListener('change',e=>previewProfileFile(e.target,$('profileAvatar'),'avatar'));
+$('profileCoverFile')?.addEventListener('change',e=>previewProfileFile(e.target,$('profileCover'),'cover'));
+setStatus('Cargando datos guardados…');
+syncFromServer().then(()=>startRealtimeSync());
+setInterval(()=>{ if(document.visibilityState==='visible' && !serverOnline) syncFromServer() },30000);setInterval(()=>{if(activeLive&&document.visibilityState==='visible')updateViewerCount()},5000);
+window.addEventListener('online',()=>syncFromServer().then(startRealtimeSync));
+
+/* Comunidad completa: chat rápido, multimedia, encuestas, voz y eventos */
+/* Comunidad estilo Discord: canales, miembros y controles de sesión */
+let communityTextChannelId='general';
+let communityMicStream=null;
+function currentCommunityTextChannel(){const c=currentCommunity();ensureCommunityFeatures(c);return c?.textChannels.find(x=>x.id===communityTextChannelId)||c?.textChannels[0]||null}
+function selectCommunityTextChannel(id){communityTextChannelId=id||'general';setCommunityPane('chat');renderCommunityChannelSidebar();renderCommunityChat()}
+function renderCommunityChannelSidebar(){const c=currentCommunity();if(!c)return;ensureCommunityFeatures(c);const q=($('communityChannelSearch')?.value||'').trim().toLowerCase();const channels=c.textChannels.filter(x=>!q||x.name.toLowerCase().includes(q));const list=$('communityTextChannels');if(list)list.innerHTML=channels.map(ch=>`<button class="discord-channel-item ${ch.id===communityTextChannelId?'active':''}" onclick="selectCommunityTextChannel('${esc(ch.id)}')"># <span>${esc(ch.name)}</span><small>${(c.chatMessages||[]).filter(m=>m.channelId===ch.id).length||''}</small></button>`).join('')||'<small class="muted" style="padding:8px">Sin canales</small>';const vl=$('communityVoiceChannelsMini');if(vl)vl.innerHTML=c.voiceRooms.map(r=>`<button class="discord-channel-item" onclick="setCommunityPane('voice');renderCommunityVoice()">🔊 <span>${esc(r.name)}</span><small>${Number(r.members)||0}</small></button>`).join('');const title=$('communityChannelTitle'),topic=$('communityChannelTopic'),input=$('communityChatInput');const ch=currentCommunityTextChannel();if(title)title.textContent='# '+(ch?.name||'general');if(topic)topic.textContent=ch?.topic?' · '+ch.topic:' · Chat de la comunidad';if(input)input.placeholder='Escribe en #'+(ch?.name||'general')}
+function addCommunityTextChannel(){const c=currentCommunity();if(!c)return;const name=prompt('Nombre del canal de texto');if(!name)return;const clean=name.trim().toLowerCase().replace(/[^a-z0-9áéíóúñ_-]+/gi,'-').replace(/^-+|-+$/g,'').slice(0,28);if(!clean)return;if(c.textChannels.some(x=>x.name===clean)){toast('Ese canal ya existe.');return}c.textChannels.push({id:uid(),name:clean,topic:'Canal de la comunidad'});saveState();renderCommunityChannelSidebar();toast('Canal creado')}
+function addCommunityVoiceChannel(){const c=currentCommunity();if(!c)return;const name=prompt('Nombre de la sala de voz');if(!name)return;const clean=name.trim().slice(0,28);if(!clean)return;c.voiceRooms.push({id:uid(),name:clean,members:0});saveState();renderCommunityChannelSidebar();renderCommunityVoice();toast('Sala de voz creada')}
+function renderCommunityMembers(){const c=currentCommunity(),box=$('communityMembersList'),count=$('communityMemberCount');if(!c||!box)return;ensureCommunityFeatures(c);const names=[...new Set([c.owner,...(c.membersList||[])].filter(Boolean))];const onlineCount=Math.max(1,Math.min(names.length,Math.round((Number(c.members)||1)*.18)));const online=new Set(names.slice(0,onlineCount));if(count)count.textContent=names.length;box.innerHTML=names.map(n=>{const role=roleLabelForUser(n,c);return `<div class="discord-member"><span class="discord-member-avatar">${n===c.owner?'👑':'🙂'}</span><div class="discord-member-info"><b>${esc(n)}</b><small>${role.replace(/<[^>]*>/g,'')||'Miembro'}</small></div><i class="discord-member-status" style="opacity:${online.has(n)?1:.28}"></i></div>`}).join('')||'<small class="muted">No hay miembros todavía.</small>'}
+function toggleCommunityMembers(){const el=$('communityMemberSidebar');if(!el)return;el.style.display=el.style.display==='none'?'block':'';renderCommunityMembers()}
+function showCommunityInfo(){const c=currentCommunity();if(c)toast(`${c.name} · ${c.category} · ${Number(c.members)||1} miembros`)}
+async function toggleCommunityMic(){const btn=$('communityMicToggle');if(communityMicStream){communityMicStream.getTracks().forEach(t=>t.stop());communityMicStream=null;if(btn)btn.textContent='🎙️';toast('Micrófono apagado');return}if(!navigator.mediaDevices?.getUserMedia){toast('Tu navegador no permite usar el micrófono.');return}try{communityMicStream=await navigator.mediaDevices.getUserMedia({audio:true});if(btn)btn.textContent='🔇';toast('Micrófono activado (local)')}catch(e){toast('No se pudo activar el micrófono.')}
+}
+function currentCommunity(){return state.communities.find(c=>c.id===currentCommunityId)}
+function ensureCommunityFeatures(c){if(!c)return;c.roles=Array.isArray(c.roles)?c.roles:[];if(c.owner&&!c.roles.some(r=>r.user===c.owner&&/fundador|creador/i.test(r.name||'')))c.roles.unshift({name:'Creador',user:c.owner,badge:'👑'});c.chatMessages=Array.isArray(c.chatMessages)?c.chatMessages:[];c.textChannels=Array.isArray(c.textChannels)&&c.textChannels.length?c.textChannels:[{id:'general',name:'general',topic:'Conversación general'},{id:'anuncios',name:'anuncios',topic:'Noticias y avisos'}];c.textChannels.forEach((ch,i)=>{if(!ch.id)ch.id=i?'canal-'+i:'general';if(!ch.name)ch.name='canal-'+(i+1)});c.chatMessages.forEach(m=>{if(!m.channelId)m.channelId='general'});c.voiceRooms=Array.isArray(c.voiceRooms)&&c.voiceRooms.length?c.voiceRooms:[{id:'general-voz',name:'General',members:Math.max(0,Math.round((Number(c.members)||1)*.08))},{id:'gaming-voz',name:'Gaming',members:Math.max(0,Math.round((Number(c.members)||1)*.05))}];c.events=Array.isArray(c.events)?c.events:[];c.membersList=Array.isArray(c.membersList)?c.membersList:[];if(c.owner&&!c.membersList.includes(c.owner))c.membersList.unshift(c.owner)}
+function roleLabelForUser(user,c){return renderRoleBadges(user,c)||''}
+function setCommunityPane(pane){['chat','voice','events'].forEach(x=>{$('communityPane'+x[0].toUpperCase()+x.slice(1))?.classList.toggle('active',x===pane);$('communityTab'+x[0].toUpperCase()+x.slice(1))?.classList.toggle('active',x===pane)});if(pane==='chat')renderCommunityChat();if(pane==='voice')renderCommunityVoice();if(pane==='events')renderCommunityEvents()}
+function renderCommunityChat(){const c=currentCommunity(),box=$('communityChatBox');if(!c||!box)return;ensureCommunityFeatures(c);const ch=currentCommunityTextChannel();const msgs=c.chatMessages.filter(m=>m.channelId===(ch?.id||'general')).slice(-80);if(!msgs.length){box.innerHTML='<div class="empty"><strong>Canal general vacío</strong>Escribe un mensaje para iniciar la conversación.</div>';return}box.innerHTML=msgs.map(m=>{const role=roleLabelForUser(m.author,c);let body='';if(m.type==='media'&&m.mediaId)body=`<img class="community-chat-media" src="/api/media/${encodeURIComponent(m.mediaId)}" data-media-id="${esc(m.mediaId)}" alt="Imagen compartida">`;else if(m.type==='voice'&&m.mediaId)body=`<audio class="community-chat-media" controls src="/api/media/${encodeURIComponent(m.mediaId)}"></audio>`;else if(m.type==='poll')body=`<div class="mini-poll"><b>📊 ${esc(m.question)}</b>${(m.options||[]).map((o,i)=>`<button class="mini-poll-option" onclick="voteCommunityPoll('${m.id}',${i})"><span>${esc(o)}</span><strong>${Number((m.votes||[])[i]||0)}</strong></button>`).join('')}</div>`;else body=renderMentions(m.text||'');return `<div class="community-chat-message"><div class="community-chat-avatar">${m.author===state.profile.name?'👤':'🙂'}</div><div class="community-chat-body"><div class="community-chat-head"><span class="community-chat-name">${esc(m.author)}</span>${role}<small class="muted">· ${timeAgo(m.createdAt)}</small></div><div class="community-chat-text">${body}</div></div></div>`}).join('');box.querySelectorAll('[data-media-id]').forEach(async img=>{const b=await getMedia(img.dataset.mediaId);if(b)img.src=URL.createObjectURL(b)});box.scrollTop=box.scrollHeight}
+async function sendCommunityQuickChat(){const c=currentCommunity(),input=$('communityChatInput'),file=$('communityMediaFile');if(!c)return;ensureCommunityFeatures(c);const text=input.value.trim();const f=file?.files?.[0];if(!text&&!f)return;if(f){if(f.size>4*1024*1024){toast('La imagen/GIF supera 4 MB.');return}const mediaId=await putMedia(f);c.chatMessages.push({id:uid(),author:state.profile.name||'Usuario',type:'media',mediaId,channelId:communityTextChannelId,createdAt:Date.now()});file.value=''}if(text)c.chatMessages.push({id:uid(),author:state.profile.name||'Usuario',type:'text',text,channelId:communityTextChannelId,createdAt:Date.now()});addKarma(state.profile.name||'Usuario',1);saveState();input.value='';renderCommunityChat();renderCommunities();scheduleSync()}
+function openCommunityPoll(){$('communityPollComposer')?.classList.remove('hidden');$('communityPollQuestion')?.focus()}
+function closeCommunityPoll(){$('communityPollComposer')?.classList.add('hidden')}
+function sendCommunityPoll(){const c=currentCommunity(),q=$('communityPollQuestion').value.trim(),opts=$('communityPollOptions').value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,6);if(!c||!q||opts.length<2){toast('Escribe una pregunta y al menos 2 opciones.');return}ensureCommunityFeatures(c);c.chatMessages.push({id:uid(),author:state.profile.name||'Usuario',type:'poll',question:q,options:opts,votes:Array(opts.length).fill(0),channelId:communityTextChannelId,createdAt:Date.now()});saveState();$('communityPollQuestion').value='';$('communityPollOptions').value='';closeCommunityPoll();renderCommunityChat();scheduleSync();toast('📊 Encuesta publicada')}
+function voteCommunityPoll(id,index){const c=currentCommunity(),m=c?.chatMessages?.find(x=>x.id===id);if(!m||m.type!=='poll')return;m.votes=m.votes||Array(m.options.length).fill(0);m.votes[index]=(m.votes[index]||0)+1;saveState();renderCommunityChat()}
+async function toggleCommunityVoiceNote(){const status=$('communityVoiceNoteStatus');if(communityVoiceRecorder&&communityVoiceRecorder.state!=='inactive'){communityVoiceRecorder.stop();return}if(!navigator.mediaDevices?.getUserMedia){toast('Este navegador no permite grabar notas de voz.');return}try{communityVoiceStream=await navigator.mediaDevices.getUserMedia({audio:true});communityVoiceChunks=[];communityVoiceRecorder=new MediaRecorder(communityVoiceStream);communityVoiceRecorder.ondataavailable=e=>{if(e.data?.size)communityVoiceChunks.push(e.data)};communityVoiceRecorder.onstop=async()=>{const blob=new Blob(communityVoiceChunks,{type:communityVoiceRecorder.mimeType||'audio/webm'});if(blob.size>4*1024*1024){toast('La nota de voz supera 4 MB.');communityVoiceStream?.getTracks().forEach(t=>t.stop());return}const c=currentCommunity();if(c){ensureCommunityFeatures(c);const mediaId=await putMedia(blob);c.chatMessages.push({id:uid(),author:state.profile.name||'Usuario',type:'voice',mediaId,channelId:communityTextChannelId,createdAt:Date.now()});saveState();renderCommunityChat();scheduleSync()}communityVoiceStream?.getTracks().forEach(t=>t.stop());communityVoiceStream=null;communityVoiceRecorder=null;status?.classList.add('hidden');status.textContent='🎙️ Pulsa otra vez para detener la nota de voz.'};communityVoiceRecorder.start();status?.classList.remove('hidden');status.textContent='🎙️ Grabando… pulsa otra vez para detener.'}catch(e){toast('No se pudo acceder al micrófono.')}}
+function renderCommunityVoice(){const c=currentCommunity(),rooms=$('communityVoiceRooms'),status=$('communityVoiceStatus');if(!c||!rooms)return;ensureCommunityFeatures(c);const total=Math.max(1,Math.round((Number(c.members)||1)*.12));status.innerHTML=`<div class="voice-status">🔊 <b>Canales de voz</b> · <span class="community-live-count"><i></i>${total} conectados ahora</span>${communityVoiceRoomId?` · En <b>${esc(c.voiceRooms.find(r=>r.id===communityVoiceRoomId)?.name||'sala')}</b>`:''}</div>`;rooms.innerHTML=c.voiceRooms.map(r=>{const active=communityVoiceRoomId===r.id;const connected=Math.max(0,Number(r.members)||0)+(active?1:0);return `<div class="voice-room"><div><b>🔊 ${esc(r.name)}</b><br><small>${connected} conectados · micrófono ${active?'activo':'disponible'}</small></div><button class="${active?'danger':'primary'}" onclick="${active?'leaveCommunityVoice()':'joinCommunityVoice(\''+r.id+'\')'}">${active?'Salir':'Entrar'}</button></div>`}).join('')}
+async function joinCommunityVoice(id){if(communityVoiceRoomId)return;const c=currentCommunity();if(!c)return;if(!navigator.mediaDevices?.getUserMedia){toast('Tu navegador no permite audio.');return}try{communityVoiceStream=await navigator.mediaDevices.getUserMedia({audio:true});communityVoiceRoomId=id;const r=c.voiceRooms.find(x=>x.id===id);if(r)r.members=Number(r.members||0)+1;saveState();renderCommunityVoice();toast('🔊 Entraste al canal de voz.');communityVoiceTimer=setInterval(()=>{if(currentCommunity()&&communityVoiceRoomId){const x=currentCommunity().voiceRooms.find(v=>v.id===id);if(x)x.members=Math.max(1,Number(x.members||1));renderCommunityVoice()}},10000)}catch(e){toast('No se pudo activar el micrófono.')}}
+function leaveCommunityVoice(){const c=currentCommunity();if(c&&communityVoiceRoomId){const r=c.voiceRooms.find(x=>x.id===communityVoiceRoomId);if(r)r.members=Math.max(0,Number(r.members||0)-1);saveState()}communityVoiceStream?.getTracks().forEach(t=>t.stop());communityVoiceStream=null;communityVoiceRoomId=null;if(communityVoiceTimer)clearInterval(communityVoiceTimer);communityVoiceTimer=null;renderCommunityVoice();toast('Saliste del canal de voz.')}
+function openCommunityEventComposer(){const title=prompt('Nombre del evento');if(!title)return;const date=prompt('Fecha y hora (ej. 2026-10-10 20:00)');if(!date)return;const c=currentCommunity();if(!c)return;ensureCommunityFeatures(c);c.events.push({id:uid(),title,date,description:'Actividad de la comunidad',going:[],createdAt:Date.now()});saveState();renderCommunityEvents();scheduleSync();toast('📅 Evento creado')}
+function renderCommunityEvents(){const c=currentCommunity(),box=$('communityEvents');if(!c||!box)return;ensureCommunityFeatures(c);if(!c.events.length){box.innerHTML='<div class="empty"><strong>No hay eventos programados</strong>Crea el primero para organizar un torneo, Live o actividad grupal.</div>';return}box.innerHTML=c.events.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(e=>{const going=(e.going||[]).includes(state.profile.name);return `<div class="event-card"><b>📅 ${esc(e.title)}</b><small>🕒 ${esc(e.date)}</small><span class="muted">${esc(e.description||'Actividad de la comunidad')}</span><div class="event-actions"><button class="secondary ${going?'event-going':''}" onclick="toggleEventGoing('${e.id}')">${going?'✓ Agendado':'＋ Agendar'}</button><button class="secondary" onclick="joinCommunityEvent('${e.id}')">🔴 Unirse al iniciar</button><span class="community-live-count">👥 ${(e.going||[]).length} interesados</span></div></div>`}).join('')}
+function toggleEventGoing(id){const c=currentCommunity(),e=c?.events?.find(x=>x.id===id);if(!e)return;e.going=Array.isArray(e.going)?e.going:[];const n=state.profile.name||'Usuario';if(e.going.includes(n))e.going=e.going.filter(x=>x!==n);else e.going.push(n);saveState();renderCommunityEvents();toast(e.going.includes(n)?'📅 Evento agendado':'Evento quitado de tu agenda')}
+function joinCommunityEvent(id){const c=currentCommunity(),e=c?.events?.find(x=>x.id===id);if(!e)return;toggleEventGoing(id);toast('Cuando empiece, podrás unirte desde esta comunidad.')}
+function scheduleCommunityEventNotifications(){const now=Date.now();state.communities.forEach(c=>(c.events||[]).forEach(e=>{if((e.going||[]).includes(state.profile.name)&&e.date){const t=new Date(e.date.replace(' ','T')).getTime();if(Number.isFinite(t)&&t>now&&t-now<2147483647)setTimeout(()=>{addNotification('📅 Comienza el evento: '+e.title,'interactions');toast('🔔 Comienza: '+e.title)},t-now)}}))}
+function addNotification(text,type='interactions'){state.notifications=Array.isArray(state.notifications)?state.notifications:[];state.notifications.unshift({id:uid(),text,type,createdAt:Date.now()});state.notifications=state.notifications.slice(0,100);saveState();updateNotificationCount?.()}
+
+/* Sobrescribe el detalle para inicializar las nuevas funciones sin perder lo anterior. */
+const _openCommunityDetailOriginal=openCommunityDetail;
+openCommunityDetail=function(id){const c=state.communities.find(x=>x.id===id);if(!c)return;ensureCommunityFeatures(c);currentCommunityId=id;communityTextChannelId=c.textChannels[0]?.id||'general';$('communityDetailTitle').textContent=c.name;$('communityDetailMeta').textContent=`${c.category} · ${Number(c.members)||1} miembros · ${Number(c.postsCount)||0} temas · ${Math.max(1,Math.round((Number(c.members)||1)*.12))} conectados`;$('communityServerIcon').textContent=(c.name||'C').trim().charAt(0).toUpperCase();$('communityDetailDescription').querySelector?.('h3');$('communityDetailBox').classList.remove('hidden');renderCommunityChannelSidebar();renderCommunityChat();renderCommunityVoice();renderCommunityEvents();renderCommunityMembers();openRoleManager()};
+const _closeCommunityDetailOriginal=closeCommunityDetail;
+closeCommunityDetail=function(){leaveCommunityVoice();if(communityMicStream){communityMicStream.getTracks().forEach(t=>t.stop());communityMicStream=null}const btn=$('communityMicToggle');if(btn)btn.textContent='🎙️';_closeCommunityDetailOriginal()};
+const _createCommunityOriginal=createCommunity;
+createCommunity=async function(){await _createCommunityOriginal();const c=state.communities[0];if(c)ensureCommunityFeatures(c);saveState();scheduleCommunityEventNotifications()};
+const _renderCommunityThreadsOriginal=renderCommunityThreads;
+renderCommunityThreads=function(){_renderCommunityThreadsOriginal();if(currentCommunity())renderCommunityChat()};
+const _appendLiveChatOriginal=appendLiveChat;
+appendLiveChat=function(name,text,highlight=false){_appendLiveChatOriginal(name,text,highlight);const c=currentCommunity();if(c&&$('communityPaneChat')?.classList.contains('active'))renderCommunityChat()};
+scheduleCommunityEventNotifications();
+updateAccountWelcome();
+</script>
+</body>
+</html>
